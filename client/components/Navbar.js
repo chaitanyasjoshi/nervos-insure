@@ -1,6 +1,8 @@
 import { Disclosure } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
+import { useState } from 'react';
+import { getWeb3 } from '../web3/getWeb3';
 
 const navigation = [
   { name: 'MY COVERS', href: '#', current: true },
@@ -13,6 +15,16 @@ function classNames(...classes) {
 }
 
 export default function Navbar() {
+  const [web3, setWeb3] = useState(null);
+  const [account, setAccount] = useState(null);
+
+  const connect = async function () {
+    const web3 = await getWeb3();
+    setWeb3(web3);
+    const account = window.ethereum.selectedAddress;
+    setAccount(account);
+  };
+
   return (
     <Disclosure as='nav' className='bg-gray-800 font-roboto'>
       {({ open }) => (
@@ -64,8 +76,13 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
-              <button className='bg-indigo-700 text-white px-12 py-2 rounded-md'>
-                Connect wallet
+              <button
+                className='bg-indigo-700 text-white text-sm w-48 py-2 rounded-md'
+                onClick={connect}
+              >
+                {account
+                  ? `${account.slice(0, 14)}...${account.slice(-4)}`
+                  : 'Connect wallet'}
               </button>
             </div>
           </div>
