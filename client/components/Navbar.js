@@ -5,9 +5,9 @@ import { useState } from 'react';
 import { getWeb3 } from '../web3/getWeb3';
 
 const navigation = [
-  { name: 'MY COVERS', href: '#', current: true },
+  { name: 'MY COVERS', href: '/', current: true },
   { name: 'GET COVERED', href: '#', current: false },
-  { name: 'SUPPLY CAPITAL', href: '#', current: false },
+  { name: 'SUPPLY CAPITAL', href: '/capital', current: false },
 ];
 
 function classNames(...classes) {

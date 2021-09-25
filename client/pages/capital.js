@@ -1,14 +1,13 @@
+import React from 'react';
 import Head from 'next/head';
+import Card from '../components/Card';
 import {
-  ShieldCheckIcon,
-  FlagIcon,
-  TagIcon,
-  CollectionIcon,
+  ChartPieIcon,
+  LibraryIcon,
+  TrendingUpIcon,
 } from '@heroicons/react/outline';
 
-import Card from '../components/Card';
-
-export default function Home() {
+export default function capital() {
   return (
     <div className='bg-gray-50'>
       <Head>
@@ -19,28 +18,21 @@ export default function Home() {
       <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 font-roboto py-10 '>
         <div className='flex items-center justify-between'>
           <Card
-            title='Total cover'
+            title='Supplied capital'
             amount='0'
             unit='CKB'
-            icon={<ShieldCheckIcon className='block h-8 w-8 text-white' />}
+            icon={<LibraryIcon className='block h-8 w-8 text-white' />}
           />
           <Card
-            title='No of active covers'
+            title='Acive capital pools'
             amount='0'
-            icon={<CollectionIcon className='block h-8 w-8 text-white' />}
+            icon={<ChartPieIcon className='block h-8 w-8 text-white' />}
           />
           <Card
-            title='Insurance fee'
+            title='Total APY'
             amount='0'
-            unit='CKB'
-            pm
-            icon={<TagIcon className='block h-8 w-8 text-white' />}
+            icon={<TrendingUpIcon className='block h-8 w-8 text-white' />}
           />
-          {/* <Card
-            title='Ongoing claims'
-            amount='0'
-            icon={<FlagIcon className='block h-8 w-8 text-white' />}
-          /> */}
         </div>
       </div>
     </div>
