@@ -1,7 +1,6 @@
 import Head from 'next/head';
 import {
   ShieldCheckIcon,
-  FlagIcon,
   TagIcon,
   CollectionIcon,
 } from '@heroicons/react/outline';
@@ -36,11 +35,6 @@ export default function Home() {
             pm
             icon={<TagIcon className='block h-8 w-8 text-white' />}
           />
-          {/* <Card
-            title='Ongoing claims'
-            amount='0'
-            icon={<FlagIcon className='block h-8 w-8 text-white' />}
-          /> */}
         </div>
       </div>
     </div>

@@ -12,8 +12,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@chainlink/contracts": "^0.2.1",
-    "@openzeppelin/contracts": "^4.3.2"
+  "devDependencies": {
+    "@chainlink/contracts": "^0.2.2",
+    "@openzeppelin/contracts": "^4.3.2",
+    "@polyjuice-provider/truffle": "^0.0.1-rc11",
+    "@polyjuice-provider/web3": "^0.0.1-rc11",
+    "babel-polyfill": "^6.26.0",
+    "babel-register": "^6.26.0",
+    "dotenv": "^10.0.0"
   }
 }

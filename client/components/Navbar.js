@@ -1,7 +1,7 @@
 import { Disclosure } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getWeb3 } from '../web3/getWeb3';
 
 const navigation = [
@@ -18,11 +18,21 @@ export default function Navbar() {
   const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
 
+  useEffect(() => {
+    setAddress();
+  }, []);
+
   const connect = async function () {
     const web3 = await getWeb3();
     setWeb3(web3);
-    const account = window.ethereum.selectedAddress;
-    setAccount(account);
+    setAddress();
+  };
+
+  const setAddress = function () {
+    try {
+      const account = window.ethereum.selectedAddress;
+      setAccount(account);
+    } catch (error) {}
   };
 
   return (
