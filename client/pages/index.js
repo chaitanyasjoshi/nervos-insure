@@ -4,10 +4,39 @@ import {
   TagIcon,
   CollectionIcon,
 } from '@heroicons/react/outline';
+import { useEffect, useState } from 'react';
 
 import Card from '../components/Card';
 
+import { getClientContract } from '../web3/insuranceprovider';
+import {
+  getContractStatus,
+  getPayoutValue,
+  getPremium,
+} from '../web3/insurancecontract';
+
 export default function Home() {
+  const [totalCover, setTotalCover] = useState(0);
+  const [premium, setPremium] = useState(0);
+
+  useEffect(() => {
+    fetchClientDetails();
+    window.ethereum.on('accountsChanged', fetchClientDetails);
+  }, []);
+
+  const fetchClientDetails = async function (_) {
+    const clientAddr = window.ethereum.selectedAddress;
+    if (clientAddr) {
+      const clientContract = await getClientContract(clientAddr);
+      if (clientContract != '0x'.padEnd(40, '0')) {
+        const payoutValue = await getPayoutValue(clientContract);
+        const premium = await getPremium(clientContract);
+        setTotalCover(payoutValue / 10 ** 8);
+        setPremium(premium / 10 ** 8);
+      }
+    }
+  };
+
   return (
     <div className='bg-gray-50'>
       <Head>
@@ -19,7 +48,7 @@ export default function Home() {
         <div className='flex items-center justify-between'>
           <Card
             title='Total cover'
-            amount='0'
+            amount={totalCover}
             unit='CKB'
             icon={<ShieldCheckIcon className='block h-8 w-8 text-white' />}
           />
@@ -30,7 +59,7 @@ export default function Home() {
           />
           <Card
             title='Insurance fee'
-            amount='0'
+            amount={premium}
             unit='CKB'
             pm
             icon={<TagIcon className='block h-8 w-8 text-white' />}

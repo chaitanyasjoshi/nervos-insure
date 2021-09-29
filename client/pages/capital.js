@@ -24,7 +24,7 @@ export default function capital() {
             icon={<LibraryIcon className='block h-8 w-8 text-white' />}
           />
           <Card
-            title='Acive capital pools'
+            title='Active capital pools'
             amount='0'
             icon={<ChartPieIcon className='block h-8 w-8 text-white' />}
           />

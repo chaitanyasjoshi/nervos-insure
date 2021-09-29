@@ -5,18 +5,22 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorInterface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "./InsuranceContract.sol";
 
 contract InsuranceProvider is Ownable {
     using SafeMath for uint;
+    using Counters for Counters.Counter;
     
     address public insurer;
     AggregatorV3Interface internal priceFeed;
     
     uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
     
-    mapping(address => InsuranceContract) contracts;
-    mapping(address => address) clientToContract;
+    Counters.Counter private _contractCount;
+    address[] contracts;
+
+    mapping(address => address) clientContract;
 
     constructor() {
         insurer = payable(msg.sender);
@@ -25,7 +29,7 @@ contract InsuranceProvider is Ownable {
     
     event contractCreated(address _insuranceContract, uint _premium, uint _totalCover);
     
-    function newContract(address _client, uint _duration, uint _premium, uint _payoutValue) public payable onlyOwner() returns(address) {
+    function newContract(uint _duration, uint _premium, uint _payoutValue) public payable onlyOwner() returns(address) {
         // require(_duration >= DAY_IN_SECONDS * 30, 'Cover duration must be atleast 30 days');
         // require(_payoutValue >= 0, 'Payout value must be greater than 0');
         // require(_premium > 0, 'Premium must be greater than 0');
@@ -33,24 +37,19 @@ contract InsuranceProvider is Ownable {
         
         uint _collateralValue = uint(getLatestPrice()); //Calculate collateral value based on current price;
         
-        address contractAddr = address((new InsuranceContract){value: _payoutValue}(_client, _duration, _premium, _payoutValue, _collateralValue));
+        address contractAddr = address((new InsuranceContract){value: _payoutValue}(msg.sender, _duration, _premium, _payoutValue, _collateralValue));
 
-        InsuranceContract insuranceContract = InsuranceContract(contractAddr);
-        contracts[contractAddr] = insuranceContract;
-        clientToContract[msg.sender] = contractAddr;
+        _contractCount.increment();
+        contracts.push(contractAddr);
+        clientContract[msg.sender] = contractAddr;
 
-        emit contractCreated(address(insuranceContract), msg.value, _payoutValue);
+        emit contractCreated(contractAddr, msg.value, _payoutValue);
 
-        return address(insuranceContract);
+        return contractAddr;
     }
     
-    function getContract(address _contract) external view returns (InsuranceContract) {
-        return contracts[_contract];
-    }
-    
-    function getClientContract(address _client) external view returns (InsuranceContract) {
-        address contractAddr = clientToContract[_client];
-        return contracts[contractAddr];
+    function getClientContract() external view returns (address) {
+        return clientContract[msg.sender];
     }
 
     function updateContract(address _contract) external {

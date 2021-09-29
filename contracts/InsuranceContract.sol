@@ -13,7 +13,7 @@ contract InsuranceContract is Ownable {
     uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
 
     address public insurer;
-    address  client;
+    address client;
     uint startDate;
     uint duration;
     uint premium;
@@ -63,7 +63,7 @@ contract InsuranceContract is Ownable {
         emit contractCreated(insurer, client, duration, premium, payoutValue);
     }
     
-    function updateContract() public onContractActive() {
+    function updateContract() public onContractActive() onlyOwner() {
         checkEndContract();
 
         if (contractActive) {
@@ -78,7 +78,8 @@ contract InsuranceContract is Ownable {
     }
     
     function payOutContract() private onContractActive() {
-        payable(client).transfer(address(this).balance);
+        payable(client).transfer(premium);
+        payable(insurer).transfer(address(this).balance);
 
         emit contractPaidOut(block.timestamp, payoutValue, currentValue);
 
@@ -91,15 +92,17 @@ contract InsuranceContract is Ownable {
         if (requestCount >= (duration.div(DAY_IN_SECONDS) - 2)) {
             payable(insurer).transfer(address(this).balance);
         } else {
+            //Insurer did not make required no of requests
             payable(client).transfer(premium);
             payable(insurer).transfer(address(this).balance);
+            contractPaid = true;
         }
 
         contractActive = false;
         emit contractEnded(block.timestamp, address(this).balance);
     }
     
-    function getLatestPrice() public view returns (int) {
+    function getLatestPrice() internal view returns (int) {
         (
             uint80 roundID,
             int price,
@@ -110,6 +113,10 @@ contract InsuranceContract is Ownable {
         require(timeStamp > 0, "Round not complete");
         
         return price;
+    }
+
+    function getClient() external view returns (address) {
+      return client;
     }
     
     function getContractBalance() external view returns (uint) {
@@ -150,10 +157,6 @@ contract InsuranceContract is Ownable {
 
     function getContractStartDate() external view returns (uint) {
         return startDate;
-    }
-
-    function getNow() external view returns (uint) {
-        return block.timestamp;
     }
 
 }

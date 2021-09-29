@@ -29,10 +29,8 @@ export default function Navbar() {
   };
 
   const setAddress = function () {
-    try {
-      const account = window.ethereum.selectedAddress;
-      setAccount(account);
-    } catch (error) {}
+    const account = window.ethereum.selectedAddress;
+    setAccount(account);
   };
 
   return (
@@ -77,7 +75,12 @@ export default function Navbar() {
                             'px-3 py-2 rounded-md text-sm font-medium'
                           )}
                           aria-current={item.current ? 'page' : undefined}
-                          onClick={() => (item.current = true)}
+                          onClick={() => {
+                            navigation.forEach((item) => {
+                              item.current = false;
+                            });
+                            item.current = true;
+                          }}
                         >
                           {item.name}
                         </a>

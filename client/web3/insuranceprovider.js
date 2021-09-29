@@ -15,27 +15,13 @@ export const newContract = async function (
   return contractAddr;
 };
 
-export const getContractInstance = async function (contractAddr) {
-  const insuranceProvider = await getInstance(InsuranceProvider);
-  const insuranceContract = await insuranceProvider.methods
-    .getContract(contractAddr)
-    .call();
-
-  return insuranceContract;
-};
-
 export const getClientContract = async function (clientAddr) {
   const insuranceProvider = await getInstance(InsuranceProvider);
   const insuranceContract = await insuranceProvider.methods
-    .getClientContract(clientAddr)
-    .call();
+    .getClientContract()
+    .call({ from: clientAddr });
 
   return insuranceContract;
-};
-
-export const updateContract = async function (contractAddr) {
-  const insuranceProvider = await getInstance(InsuranceProvider);
-  await insuranceProvider.methods.updateContract(contractAddr).send();
 };
 
 export const getContractCurrentValue = async function (contractAddr) {
