@@ -6,7 +6,7 @@ import { getWeb3 } from '../web3/getWeb3';
 
 const navigation = [
   { name: 'MY COVERS', href: '/', current: true },
-  { name: 'GET COVERED', href: '#', current: false },
+  { name: 'GET COVERED', href: '/cover', current: false },
   { name: 'SUPPLY CAPITAL', href: '/capital', current: false },
 ];
 

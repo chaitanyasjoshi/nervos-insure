@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Card({ title, amount, unit, pm, icon }) {
+export default function Stat({ title, amount, unit, pm, icon }) {
   return (
     <div className='flex items-center justify-between p-6 w-80 rounded-lg border border-gray-200 bg-white'>
       <div>

@@ -20,7 +20,7 @@ contract InsuranceProvider is Ownable {
     Counters.Counter private _contractCount;
     address[] contracts;
 
-    mapping(address => address) clientContract;
+    mapping(address => address[]) clientContract;
 
     constructor() {
         insurer = payable(msg.sender);
@@ -41,14 +41,14 @@ contract InsuranceProvider is Ownable {
 
         _contractCount.increment();
         contracts.push(contractAddr);
-        clientContract[msg.sender] = contractAddr;
+        clientContract[msg.sender].push(contractAddr);
 
         emit contractCreated(contractAddr, msg.value, _payoutValue);
 
         return contractAddr;
     }
     
-    function getClientContract() external view returns (address) {
+    function getClientContracts() external view returns (address[] memory) {
         return clientContract[msg.sender];
     }
 

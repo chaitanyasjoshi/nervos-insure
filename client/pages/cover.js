@@ -1,13 +1,15 @@
-import React from 'react';
 import Head from 'next/head';
-import Stat from '../components/Stat';
 import {
-  ChartPieIcon,
-  LibraryIcon,
-  TrendingUpIcon,
+  ShieldCheckIcon,
+  TagIcon,
+  CollectionIcon,
+  CashIcon,
+  StatusOnlineIcon,
 } from '@heroicons/react/outline';
 
-export default function capital() {
+import Stat from '../components/Stat';
+
+export default function Cover() {
   return (
     <div className='bg-gray-50'>
       <Head>
@@ -17,22 +19,21 @@ export default function capital() {
       </Head>
       <div className='bg-gray-800'>
         <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 font-roboto'>
-          <div className='flex items-center justify-between py-10 border border-l-0 border-r-0 border-b-0 border-gray-700'>
+          <div className='flex flex-wrap items-center justify-between py-10 border border-l-0 border-r-0 border-b-0 border-gray-700'>
             <Stat
-              title='Supplied capital'
+              title='Total cover value'
               amount='0'
-              unit='CKB'
-              icon={<LibraryIcon className='block h-8 w-8 text-white' />}
+              icon={<CashIcon className='block h-8 w-8 text-white' />}
             />
             <Stat
-              title='Active capital pools'
+              title='Total covers'
               amount='0'
-              icon={<ChartPieIcon className='block h-8 w-8 text-white' />}
+              icon={<CollectionIcon className='block h-8 w-8 text-white' />}
             />
             <Stat
-              title='Total APY'
+              title='Total active covers'
               amount='0'
-              icon={<TrendingUpIcon className='block h-8 w-8 text-white' />}
+              icon={<StatusOnlineIcon className='block h-8 w-8 text-white' />}
             />
           </div>
         </div>
