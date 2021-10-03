@@ -9,91 +9,117 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "./InsuranceContract.sol";
 
 contract InsuranceProvider is Ownable {
-    using SafeMath for uint;
-    using Counters for Counters.Counter;
-    
-    address public insurer;
-    AggregatorV3Interface internal priceFeed;
-    
-    uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
-    
-    Counters.Counter private _contractCount;
-    address[] contracts;
+  using SafeMath for uint;
+  using Counters for Counters.Counter;
+  
+  AggregatorV3Interface internal priceFeed;
+  
+  uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
+  
+  Counters.Counter private _contractCount;
+  address[] contracts;
 
-    mapping(address => address[]) clientContract;
+  mapping(address => address[]) clientContract;
 
-    constructor() {
-        insurer = payable(msg.sender);
-        priceFeed = AggregatorV3Interface(0x0FcBAebA1BD0EbF3cFed672C3e98B4aa76DA9546);
-    }
+  constructor() {
+    priceFeed = AggregatorV3Interface(0x0FcBAebA1BD0EbF3cFed672C3e98B4aa76DA9546);
+  }
     
-    event contractCreated(address _insuranceContract, uint _premium, uint _totalCover);
+  event contractCreated(address _insuranceContract, uint _premium, uint _totalCover);
     
-    function newContract(uint _duration, uint _premium, uint _payoutValue) public payable onlyOwner() returns(address) {
-        // require(_duration >= DAY_IN_SECONDS * 30, 'Cover duration must be atleast 30 days');
-        // require(_payoutValue >= 0, 'Payout value must be greater than 0');
-        // require(_premium > 0, 'Premium must be greater than 0');
-        // require(msg.value == _premium, 'Premium must be paid at the time of contract creation');
+  function newContract(uint _duration, uint _premium, uint _payoutValue) public payable returns(address) {
+    require(_duration.mod(DAY_IN_SECONDS.mul(30)) == 0, 'Cover duration must be in muliple of 30 days');
+    require(_payoutValue >= 0, 'Payout value must be greater than 0');
+    require(_premium > 0, 'Premium must be greater than 0');
+    require(msg.value == _premium, 'Premium must be paid at the time of contract creation');
         
-        uint _collateralValue = uint(getLatestPrice()); //Calculate collateral value based on current price;
+    uint _collateralValue = uint(getLatestPrice()); //Calculate collateral value based on current price;
         
-        address contractAddr = address((new InsuranceContract){value: _payoutValue}(msg.sender, _duration, _premium, _payoutValue, _collateralValue));
+    address contractAddr = address(new InsuranceContract(msg.sender, _duration, _premium, _payoutValue, _collateralValue));
 
-        _contractCount.increment();
-        contracts.push(contractAddr);
-        clientContract[msg.sender].push(contractAddr);
+    _contractCount.increment();
+    contracts.push(contractAddr);
+    clientContract[msg.sender].push(contractAddr);
 
-        emit contractCreated(contractAddr, msg.value, _payoutValue);
+    emit contractCreated(contractAddr, msg.value, _payoutValue);
 
-        return contractAddr;
-    }
+    return contractAddr;
+  }
     
-    function getClientContracts() external view returns (address[] memory) {
-        return clientContract[msg.sender];
+  function getClientContracts() external view returns (address[] memory) {
+    return clientContract[msg.sender];
+  }
+
+  function getContractCount() external view returns(Counters.Counter memory) {
+    return _contractCount;
+  }
+
+  function getTotalContractValue() external view returns(uint) {
+    uint totalContractValue = 0;
+    for (uint256 i = 0; i < contracts.length; i++) {
+      InsuranceContract insuranceContract = InsuranceContract(contracts[i]);
+      totalContractValue = totalContractValue.add(insuranceContract.getPayoutValue());
     }
 
-    function updateContract(address _contract) external {
-        InsuranceContract i = InsuranceContract(_contract);
-        i.updateContract();
+    return totalContractValue;
+  }
+
+  function getActiveContractCount() external view returns(uint) {
+    uint activeContractCount = 0;
+    for (uint256 i = 0; i < contracts.length; i++) {
+      InsuranceContract insuranceContract = InsuranceContract(contracts[i]);
+      bool isActive = insuranceContract.getContractStatus();
+
+      if(isActive) {
+        activeContractCount += 1;
+      }
     }
 
-    function getContractCurrentValue(address _contract) external view returns(uint) {
-        InsuranceContract i = InsuranceContract(_contract);
-        return i.getCurrentValue();
-    }
+    return activeContractCount;
+  }
 
-    function getContractRequestCount(address _contract) external view returns(uint) {
-        InsuranceContract i = InsuranceContract(_contract);
-        return i.getRequestCount();
-    }
+  function updateContract(address _contract) external {
+    InsuranceContract insuranceContract = InsuranceContract(_contract);
+    insuranceContract.updateContract();
+  }
 
-    function getInsurer() external view returns (address) {
-        return insurer;
-    }
+  function getContractCurrentValue(address _contract) external view returns(uint) {
+    InsuranceContract insuranceContract = InsuranceContract(_contract);
+    return insuranceContract.getCurrentValue();
+  }
 
-    function getContractStatus(address _address) external view returns (bool) {
-        InsuranceContract i = InsuranceContract(_address);
-        return i.getContractStatus();
-    }
+  function getContractRequestCount(address _contract) external view returns(uint) {
+    InsuranceContract insuranceContract = InsuranceContract(_contract);
+    return insuranceContract.getRequestCount();
+  }
 
-    function getContractBalance() external view returns (uint) {
-        return address(this).balance;
-    }
+  function getInsurer() external view returns (address) {
+    return address(this);
+  }
 
-    function endContractProvider() external onlyOwner() {
-        selfdestruct(payable(insurer));
-    }
+  function getContractStatus(address _address) external view returns (bool) {
+    InsuranceContract insuranceContract = InsuranceContract(_address);
+    return insuranceContract.getContractStatus();
+  }
 
-    function getLatestPrice() internal view returns (int) {
-        (
-            uint80 roundID,
-            int price,
-            uint startedAt,
-            uint timeStamp,
-            uint80 answeredInRound
-        ) = priceFeed.latestRoundData();
-        require(timeStamp > 0, "Round not complete");
+  function getContractBalance() external view returns (uint) {
+    return address(this).balance;
+  }
 
-        return price;
-    }
+  function endContractProvider() external onlyOwner() {
+    selfdestruct(payable(owner()));
+  }
+
+  function getLatestPrice() internal view returns (int) {
+    (
+      uint80 roundID,
+      int price,
+      uint startedAt,
+      uint timeStamp,
+      uint80 answeredInRound
+    ) = priceFeed.latestRoundData();
+    require(timeStamp > 0, "Round not complete");
+
+    return price;
+  }
 }

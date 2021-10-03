@@ -9,8 +9,8 @@ export const newContract = async function (
 ) {
   const insuranceProvider = await getInstance(InsuranceProvider);
   const contractAddr = await insuranceProvider.methods
-    .newContract(client, duration, premium, payoutValue)
-    .send({ value: payoutValue });
+    .newContract(duration, premium, payoutValue)
+    .send({ value: premium, from: client });
 
   return contractAddr;
 };
@@ -22,6 +22,33 @@ export const getClientContracts = async function (clientAddr) {
     .call({ from: clientAddr });
 
   return clientContracts;
+};
+
+export const getContractCount = async function () {
+  const insuranceProvider = await getInstance(InsuranceProvider);
+  const contractCount = await insuranceProvider.methods
+    .getContractCount()
+    .call();
+
+  return contractCount;
+};
+
+export const getTotalContractValue = async function () {
+  const insuranceProvider = await getInstance(InsuranceProvider);
+  const contractValue = await insuranceProvider.methods
+    .getTotalContractValue()
+    .call();
+
+  return contractValue;
+};
+
+export const getActiveContractCount = async function () {
+  const insuranceProvider = await getInstance(InsuranceProvider);
+  const activeContractCount = await insuranceProvider.methods
+    .getActiveContractCount()
+    .call();
+
+  return activeContractCount;
 };
 
 export const getContractCurrentValue = async function (contractAddr) {

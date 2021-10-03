@@ -32,6 +32,7 @@ export default function capital() {
             <Stat
               title='Total APY'
               amount='0'
+              unit='%'
               icon={<TrendingUpIcon className='block h-8 w-8 text-white' />}
             />
           </div>

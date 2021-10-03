@@ -5,6 +5,8 @@ import {
   CollectionIcon,
 } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 import Stat from '../components/Stat';
 
@@ -35,6 +37,7 @@ export default function Home() {
       if (clientContracts.length !== 0) {
         setContracts(clientContracts);
         clientContracts.forEach(async (contract) => {
+          console.log(contract);
           const payoutValue = await getPayoutValue(contract);
           const premium = await getPremium(contract);
           const isActive = await getContractStatus(contract);
@@ -81,11 +84,28 @@ export default function Home() {
       </div>
       <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 font-roboto'>
         <div className='py-10'>
-          <div className='flex flex-wrap items-center justify-between'>
-            {contracts.map((contract, i) => (
-              <Contract key={i} contract={contract} />
-            ))}
-          </div>
+          {contracts.length == 0 ? (
+            <div className='text-center'>
+              <Image
+                src='/not_found.svg'
+                alt='not found'
+                height='320'
+                width='320'
+              />
+              <p className='pb-6 text-2xl font-light'>No Covers!</p>
+              <Link href='/cover'>
+                <a className='block m-auto py-2 w-48 text-white bg-indigo-600 rounded-md'>
+                  Get covered
+                </a>
+              </Link>
+            </div>
+          ) : (
+            <div className='flex flex-wrap items-center justify-between'>
+              {contracts.map((contract, i) => (
+                <Contract key={i} contract={contract} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -1,16 +1,31 @@
 import Head from 'next/head';
 import {
-  ShieldCheckIcon,
-  TagIcon,
   CollectionIcon,
   CashIcon,
   StatusOnlineIcon,
 } from '@heroicons/react/outline';
+import { useEffect, useState } from 'react';
 
 import Stat from '../components/Stat';
 import Card from '../components/Card';
+import {
+  getActiveContractCount,
+  getContractCount,
+  getTotalContractValue,
+} from '../web3/insuranceprovider';
+import { toCkb } from '../utils/utils';
 
 export default function Cover() {
+  const [coverValue, setCoverValue] = useState(0);
+  const [coverCount, setCoverCount] = useState(0);
+  const [activeCoverCount, setActiveCoverCount] = useState(0);
+
+  useEffect(async () => {
+    setCoverValue(toCkb(await getTotalContractValue()));
+    setCoverCount(await getContractCount());
+    setActiveCoverCount(await getActiveContractCount());
+  }, []);
+
   return (
     <div className='bg-gray-50 font-roboto'>
       <Head>
@@ -23,17 +38,18 @@ export default function Cover() {
           <div className='flex flex-wrap items-center justify-between py-10 border border-l-0 border-r-0 border-b-0 border-gray-700'>
             <Stat
               title='Total cover value'
-              amount='0'
+              amount={coverValue}
+              unit='CKB'
               icon={<CashIcon className='block h-8 w-8 text-white' />}
             />
             <Stat
               title='Total covers'
-              amount='0'
+              amount={coverCount}
               icon={<CollectionIcon className='block h-8 w-8 text-white' />}
             />
             <Stat
               title='Total active covers'
-              amount='0'
+              amount={activeCoverCount}
               icon={<StatusOnlineIcon className='block h-8 w-8 text-white' />}
             />
           </div>
