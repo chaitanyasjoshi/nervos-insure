@@ -18,7 +18,7 @@ export const newContract = async function (
 export const getClientContracts = async function (clientAddr) {
   const insuranceProvider = await getInstance(InsuranceProvider);
   const clientContracts = await insuranceProvider.methods
-    .getClientContracts()
+    .getClientContracts(clientAddr)
     .call({ from: clientAddr });
 
   return clientContracts;

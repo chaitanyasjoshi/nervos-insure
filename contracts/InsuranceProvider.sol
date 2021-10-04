@@ -7,12 +7,14 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorInterface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./InsuranceContract.sol";
+import "./Pool.sol";
 
 contract InsuranceProvider is Ownable {
   using SafeMath for uint;
   using Counters for Counters.Counter;
   
   AggregatorV3Interface internal priceFeed;
+  Pool private capitalPool;
   
   uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
   
@@ -35,7 +37,7 @@ contract InsuranceProvider is Ownable {
         
     uint _collateralValue = uint(getLatestPrice()); //Calculate collateral value based on current price;
         
-    address contractAddr = address(new InsuranceContract(msg.sender, _duration, _premium, _payoutValue, _collateralValue));
+    address contractAddr = address(new InsuranceContract(payable(msg.sender), _duration, _premium, _payoutValue, _collateralValue));
 
     _contractCount.increment();
     contracts.push(contractAddr);
@@ -45,9 +47,17 @@ contract InsuranceProvider is Ownable {
 
     return contractAddr;
   }
+
+  function setCapitalPool(address _pool) external onlyOwner {
+    capitalPool = Pool(_pool);
+  }
+
+  function getCapitalPool() external view returns (Pool) {
+    return capitalPool;
+  }
     
-  function getClientContracts() external view returns (address[] memory) {
-    return clientContract[msg.sender];
+  function getClientContracts(address _client) external view returns (address[] memory) {
+    return clientContract[_client];
   }
 
   function getContractCount() external view returns(Counters.Counter memory) {
@@ -71,7 +81,7 @@ contract InsuranceProvider is Ownable {
       bool isActive = insuranceContract.getContractStatus();
 
       if(isActive) {
-        activeContractCount += 1;
+        activeContractCount = activeContractCount.add(1);
       }
     }
 
@@ -97,13 +107,9 @@ contract InsuranceProvider is Ownable {
     return address(this);
   }
 
-  function getContractStatus(address _address) external view returns (bool) {
-    InsuranceContract insuranceContract = InsuranceContract(_address);
+  function getContractStatus(address _contract) external view returns (bool) {
+    InsuranceContract insuranceContract = InsuranceContract(_contract);
     return insuranceContract.getContractStatus();
-  }
-
-  function getContractBalance() external view returns (uint) {
-    return address(this).balance;
   }
 
   function endContractProvider() external onlyOwner() {

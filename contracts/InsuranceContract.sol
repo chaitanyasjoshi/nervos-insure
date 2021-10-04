@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorInterface.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "./InsuranceProvider.sol";
+import "./Pool.sol";
 
 contract InsuranceContract is Ownable {
   using SafeMath for uint;
@@ -12,8 +14,8 @@ contract InsuranceContract is Ownable {
 
   uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
 
-  address public insurer;
-  address client;
+  InsuranceProvider public insurer;
+  address payable client;
   uint startDate;
   uint duration;
   uint premium;
@@ -27,7 +29,7 @@ contract InsuranceContract is Ownable {
   uint requestCount = 0;
 
   modifier onContractEnded() {
-    if (startDate + duration < block.timestamp) {
+    if (startDate.add(duration) < block.timestamp) {
       _;
     }
   }
@@ -38,18 +40,27 @@ contract InsuranceContract is Ownable {
   }
 
   modifier callFrequencyOncePerDay() {
-    require(block.timestamp.sub(currentValueDateChecked) > (DAY_IN_SECONDS.sub(DAY_IN_SECONDS.div(12))),'Can only check token value once per day');
+    require(
+      block.timestamp.sub(currentValueDateChecked) > (DAY_IN_SECONDS.sub(DAY_IN_SECONDS.div(12))),
+      'Can only check token value once per day'
+    );
     _;
   }
     
-  event contractCreated(address _insurer, address _client, uint _duration, uint _premium, uint _totalCover);
-  event contractPaidOut(uint _paidTime, uint _totalPaid, uint _finalCollateralValue);
-  event contractEnded(uint _endTime, uint _totalReturned);
+  event contractCreated(address indexed _client, address _insurer, uint _duration, uint _premium, uint _totalCover);
+  event contractPaidOut(address indexed _client, uint _paidTime, uint _totalPaid, uint _finalCollateralValue);
+  event contractEnded(address indexed _client, uint _endTime);
     
-  constructor(address _client, uint _duration, uint _premium, uint _payoutValue, uint _collateralValue) {
+  constructor(
+    address payable _client, 
+    uint _duration, 
+    uint _premium, 
+    uint _payoutValue, 
+    uint _collateralValue) 
+  {
     priceFeed = AggregatorV3Interface(0x0FcBAebA1BD0EbF3cFed672C3e98B4aa76DA9546);
         
-    insurer = msg.sender;
+    insurer = InsuranceProvider(msg.sender);
     client = _client;
     startDate = block.timestamp;
     duration = _duration;
@@ -58,46 +69,45 @@ contract InsuranceContract is Ownable {
     contractActive = true;
     collateralValue = _collateralValue;
         
-    emit contractCreated(insurer, client, duration, premium, payoutValue);
+    emit contractCreated(client, address(insurer), duration, premium, payoutValue);
   }
     
-  function updateContract() public onContractActive() onlyOwner() {
+  function updateContract() 
+    public 
+    onContractActive 
+    onlyOwner 
+    callFrequencyOncePerDay 
+  {
     checkEndContract();
 
     if (contractActive) {
       currentValue = uint(getLatestPrice());
       currentValueDateChecked = block.timestamp;
-      requestCount += 1;
+      requestCount = requestCount.add(1);
       if(currentValue <= (collateralValue.mul(10)).div(100)) {
         payOutContract();
       }
     }
-        
   }
     
-  function payOutContract() private onContractActive() {
-    payable(client).transfer(premium);
-    payable(insurer).transfer(address(this).balance);
+  function payOutContract() private onContractActive {
+    Pool capitalPool = insurer.getCapitalPool();
+    capitalPool.claimContract(client, payoutValue);
 
-    emit contractPaidOut(block.timestamp, payoutValue, currentValue);
+    emit contractPaidOut(client, block.timestamp, payoutValue, currentValue);
 
     contractActive = false;
     contractPaid = true;
-        
   }
     
-  function checkEndContract() private onContractEnded() {
-    if (requestCount >= (duration.div(DAY_IN_SECONDS) - 2)) {
-      payable(insurer).transfer(address(this).balance);
-    } else {
-      //Insurer did not make required no of requests
-      payable(client).transfer(premium);
-      payable(insurer).transfer(address(this).balance);
-      contractPaid = true;
+  function checkEndContract() private onContractEnded {
+    if (!(requestCount >= (duration.div(DAY_IN_SECONDS) - 2))) {
+      Pool capitalPool = insurer.getCapitalPool();
+      capitalPool.claimContract(client, payoutValue);
     }
 
     contractActive = false;
-    emit contractEnded(block.timestamp, address(this).balance);
+    emit contractEnded(client, block.timestamp);
   }
     
   function getLatestPrice() internal view returns (int) {
