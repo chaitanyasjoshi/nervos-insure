@@ -27,8 +27,8 @@ export default function Contract({ contract }) {
     const duration = await getDuration(contract);
     setIsActive(isContractActive);
     setUtilized(isContractUtilized);
-    setPremium(parseInt(toCkb(coverValue) / toCkb(contractPremium)));
-    setPayoutValue(toCkb(coverValue));
+    setPremium(toCkb(contractPremium).toFixed(4));
+    setPayoutValue(toCkb(coverValue).toFixed(4));
     setEndDate(
       moment.unix(parseInt(startDate) + parseInt(duration)).format('L')
     );
@@ -64,7 +64,7 @@ export default function Contract({ contract }) {
       <div className='flex items-center justify-between pt-6'>
         <div>
           <p className='text-sm font-light text-gray-500'>Premium</p>
-          <p className='text-sm'>{premium}%/year</p>
+          <p className='text-sm'>{premium} CKB</p>
         </div>
         <div>
           <p className='text-sm font-light text-gray-500'>My Cover</p>

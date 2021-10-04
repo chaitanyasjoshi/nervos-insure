@@ -21,7 +21,7 @@ export default function Cover() {
   const [activeCoverCount, setActiveCoverCount] = useState(0);
 
   useEffect(async () => {
-    setCoverValue(toCkb(await getTotalContractValue()));
+    setCoverValue(toCkb(await getTotalContractValue()).toFixed(4));
     setCoverCount(await getContractCount());
     setActiveCoverCount(await getActiveContractCount());
   }, []);
@@ -58,7 +58,7 @@ export default function Cover() {
       <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
         <div className='py-10'>
           <div className='flex flex-wrap items-center justify-between'>
-            <Card asset='ETH' type='Collateral Protection' premium='10' />
+            <Card asset='ETH' type='Collateral Protection' premiumPct='5' />
           </div>
         </div>
       </div>

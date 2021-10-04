@@ -32,21 +32,27 @@ export default function Home() {
 
   const fetchClientDetails = async function (_) {
     const clientAddr = window.ethereum.selectedAddress;
+
     if (clientAddr) {
       const clientContracts = await getClientContracts(clientAddr);
       if (clientContracts.length !== 0) {
         setContracts(clientContracts);
-        clientContracts.forEach(async (contract) => {
+        let totalPayout = 0;
+        let activeCount = 0;
+        let totalfee = 0;
+        for (const contract of clientContracts) {
           console.log(contract);
           const payoutValue = await getPayoutValue(contract);
           const premium = await getPremium(contract);
           const isActive = await getContractStatus(contract);
-          if (isActive) {
-            setActiveCovers(activeCovers + 1);
-          }
-          setTotalCover(totalCover + toCkb(payoutValue));
-          setInsuranceFee(insuranceFee + toCkb(premium));
-        });
+          isActive ? activeCount++ : null;
+          totalPayout =
+            parseFloat(totalPayout) + parseFloat(toCkb(payoutValue));
+          totalfee = parseFloat(totalfee) + toCkb(premium);
+        }
+        setActiveCovers(activeCount);
+        setTotalCover(totalPayout.toFixed(4));
+        setInsuranceFee(totalfee.toFixed(4));
       }
     }
   };
@@ -100,7 +106,7 @@ export default function Home() {
               </Link>
             </div>
           ) : (
-            <div className='flex flex-wrap items-center justify-between'>
+            <div className='grid grid-cols-3 gap-6'>
               {contracts.map((contract, i) => (
                 <Contract key={i} contract={contract} />
               ))}
