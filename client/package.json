@@ -12,6 +12,7 @@
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "^1.0.4",
     "@polyjuice-provider/web3": "^0.0.1-rc11",
+    "moment": "^2.29.1",
     "nervos-godwoken-integration": "^0.0.10",
     "next": "11.1.2",
     "react": "17.0.2",
