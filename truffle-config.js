@@ -4,14 +4,14 @@ require('babel-polyfill');
 const { PolyjuiceHDWalletProvider } = require('@polyjuice-provider/truffle');
 const { PolyjuiceHttpProvider } = require('@polyjuice-provider/web3');
 
-const rpc_url = new URL('http://localhost:8024');
+const rpc_url = new URL('http://godwoken-testnet-web3-rpc.ckbapp.dev');
 
-const godwoken_rpc_url = 'http://localhost:8024';
+const godwoken_rpc_url = 'http://godwoken-testnet-web3-rpc.ckbapp.dev';
 const polyjuice_config = {
   rollupTypeHash:
-    '0x4b9d74d74843f2f9e74ccf76b56cc6f576ca9b20df6cecaacf906eea5fc5cc52',
+    '0x4cc2e6526204ae6a2e8fcf12f7ad472f41a1606d5b9624beebd215d780809f6a',
   ethAccountLockCodeHash:
-    '0x2cf55023e2bfdbb86e0d95320f7d2f15393a76a830d5bb5e687e0c780d90134d',
+    '0xdeec13a7b8e100579541384ccaf4b5223733e4a5483c3aec95ddc4c1d5ea5b22',
   web3Url: godwoken_rpc_url,
 };
 

@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity >=0.4.22 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorInterface.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/FeedRegistryInterface.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./Denominations.sol";
 import "./InsuranceContract.sol";
 import "./Pool.sol";
 
@@ -13,7 +13,7 @@ contract InsuranceProvider is Ownable {
   using SafeMath for uint;
   using Counters for Counters.Counter;
   
-  AggregatorV3Interface internal priceFeed;
+  FeedRegistryInterface internal registry;
   Pool private capitalPool;
   
   uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
@@ -24,7 +24,7 @@ contract InsuranceProvider is Ownable {
   mapping(address => address[]) clientContract;
 
   constructor() {
-    priceFeed = AggregatorV3Interface(0x0FcBAebA1BD0EbF3cFed672C3e98B4aa76DA9546);
+    registry = FeedRegistryInterface(0x1363bdCE312532F864e84924D54c7dA5eDB5B1BC);
   }
     
   event contractCreated(address _insuranceContract, uint _premium, uint _totalCover);
@@ -43,7 +43,7 @@ contract InsuranceProvider is Ownable {
     contracts.push(contractAddr);
     clientContract[msg.sender].push(contractAddr);
 
-    emit contractCreated(contractAddr, msg.value, _payoutValue);
+    emit contractCreated(contractAddr, _premium, _payoutValue);
 
     return contractAddr;
   }
@@ -56,6 +56,10 @@ contract InsuranceProvider is Ownable {
     return capitalPool;
   }
     
+  /// @notice Explain to an end user what this does
+  /// @dev Explain to a developer any extra details
+  /// @param _client polyjuice address of client
+  /// @return all contracts of client
   function getClientContracts(address _client) external view returns (address[] memory) {
     return clientContract[_client];
   }
@@ -118,14 +122,14 @@ contract InsuranceProvider is Ownable {
 
   function getLatestPrice() internal view returns (int) {
     (
-      uint80 roundID,
+      uint80 roundID, 
       int price,
       uint startedAt,
       uint timeStamp,
       uint80 answeredInRound
-    ) = priceFeed.latestRoundData();
+    ) = registry.latestRoundData(Denominations.ETH, Denominations.USD);
     require(timeStamp > 0, "Round not complete");
-
+        
     return price;
   }
 }

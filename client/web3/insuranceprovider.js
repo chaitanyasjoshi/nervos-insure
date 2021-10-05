@@ -19,7 +19,7 @@ export const getClientContracts = async function (clientAddr) {
   const insuranceProvider = await getInstance(InsuranceProvider);
   const clientContracts = await insuranceProvider.methods
     .getClientContracts(clientAddr)
-    .call({ from: clientAddr });
+    .call();
 
   return clientContracts;
 };

@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity >=0.4.22 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorInterface.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import "@chainlink/contracts/src/v0.8/interfaces/FeedRegistryInterface.sol";
+import "./Denominations.sol";
 import "./InsuranceProvider.sol";
 import "./Pool.sol";
 
 contract InsuranceContract is Ownable {
   using SafeMath for uint;
-  AggregatorV3Interface internal priceFeed;
+  FeedRegistryInterface internal registry;
 
   uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
 
@@ -58,7 +58,7 @@ contract InsuranceContract is Ownable {
     uint _payoutValue, 
     uint _collateralValue) 
   {
-    priceFeed = AggregatorV3Interface(0x0FcBAebA1BD0EbF3cFed672C3e98B4aa76DA9546);
+    registry = FeedRegistryInterface(0x1363bdCE312532F864e84924D54c7dA5eDB5B1BC);
         
     insurer = InsuranceProvider(msg.sender);
     client = _client;
@@ -112,12 +112,12 @@ contract InsuranceContract is Ownable {
     
   function getLatestPrice() internal view returns (int) {
     (
-      uint80 roundID,
+      uint80 roundID, 
       int price,
       uint startedAt,
       uint timeStamp,
       uint80 answeredInRound
-    ) = priceFeed.latestRoundData();
+    ) = registry.latestRoundData(Denominations.ETH, Denominations.USD);
     require(timeStamp > 0, "Round not complete");
         
     return price;

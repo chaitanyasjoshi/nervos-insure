@@ -60,8 +60,8 @@ contract Pool is ReentrancyGuard {
   event Withdraw(address indexed _client, uint _amount, uint _time);
   event Claim(address indexed _client, uint _payoutValue, uint _time);
 
-  constructor(InsuranceProvider _insuranceProvider) {
-    insuranceProvider = _insuranceProvider;
+  constructor(address _insuranceProvider) {
+    insuranceProvider = InsuranceProvider(_insuranceProvider);
   }
 
   function deposit() 
@@ -110,6 +110,7 @@ contract Pool is ReentrancyGuard {
 
   function claimContract(address payable _client, uint _payoutValue) 
     external 
+    nonReentrant
     onlyClientContract(_client, msg.sender) 
     onlyActiveContract(msg.sender) 
   {
@@ -123,12 +124,24 @@ contract Pool is ReentrancyGuard {
     return address(this).balance;
   }
 
+  /** 
+  * @notice Explain to an end user what this does
+  * @dev Explain to a developer any extra details
+  * @param _client polyjuice address of client
+  * @return balance of deposited funds of client
+  **/
   function balanceOf(address _client) external view returns (uint) {
     Details memory providerDetails = capitalProviders[_client];
 
     return providerDetails.balance;
   }
 
+  /** 
+  * @notice Explain to an end user what this does
+  * @dev Explain to a developer any extra details
+  * @param _client polyjuice address of client
+  * @return fund unlock date off client
+  **/
   function getWithdrawalUnlockDate(address _client) public view returns (uint) {
     Details memory providerDetails = capitalProviders[_client];
 

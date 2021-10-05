@@ -7,9 +7,9 @@ import {
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { AddressTranslator } from 'nervos-godwoken-integration';
 
 import Stat from '../components/Stat';
-
 import { getClientContracts } from '../web3/insuranceprovider';
 import {
   getContractStatus,
@@ -24,6 +24,7 @@ export default function Home() {
   const [totalCover, setTotalCover] = useState(0);
   const [activeCovers, setActiveCovers] = useState(0);
   const [insuranceFee, setInsuranceFee] = useState(0);
+  const addressTranslator = new AddressTranslator();
 
   useEffect(() => {
     fetchClientDetails();
@@ -34,7 +35,10 @@ export default function Home() {
     const clientAddr = window.ethereum.selectedAddress;
 
     if (clientAddr) {
-      const clientContracts = await getClientContracts(clientAddr);
+      const polyjuiceAddress =
+        addressTranslator.ethAddressToGodwokenShortAddress(clientAddr);
+      console.log(polyjuiceAddress);
+      const clientContracts = await getClientContracts(polyjuiceAddress);
       if (clientContracts.length !== 0) {
         setContracts(clientContracts);
         let totalPayout = 0;
