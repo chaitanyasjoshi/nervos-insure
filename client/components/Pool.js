@@ -14,9 +14,12 @@ export default function Pool({ asset, type }) {
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [poolSupply, setPoolSupply] = useState(0);
 
-  useEffect(async () => {
-    if (window.ethereum.selectedAddress) {
+  useEffect(() => {
+    async function fetchData() {
       setPoolSupply(toCkb(await getReserveAvailableLiquidity()).toFixed(4));
+    }
+    if (window.ethereum.selectedAddress) {
+      fetchData();
     }
   }, []);
 

@@ -13,18 +13,21 @@ import { balanceOf } from '../web3/capitalpool';
 import { toCkb } from '../utils/utils';
 import Pool from '../components/Pool';
 
-export default function capital() {
+export default function Capital() {
   const [suppliedCapital, setsuppliedCapital] = useState(0);
   const [pools, setpools] = useState(0);
   const [totalApy, setTotalApy] = useState(0);
 
-  useEffect(async () => {
-    const clientAddr = window.ethereum.selectedAddress;
-    if (clientAddr) {
+  useEffect(() => {
+    async function fetchData() {
       const balance = await balanceOf(clientAddr);
       setsuppliedCapital(toCkb(balance).toFixed(4));
       setpools(balance > 0 ? 1 : 0);
       setTotalApy(10);
+    }
+    const clientAddr = window.ethereum.selectedAddress;
+    if (clientAddr) {
+      fetchData();
     }
   }, []);
 

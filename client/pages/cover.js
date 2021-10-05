@@ -20,12 +20,15 @@ export default function Cover() {
   const [coverCount, setCoverCount] = useState(0);
   const [activeCoverCount, setActiveCoverCount] = useState(0);
 
-  useEffect(async () => {
-    const clientAddr = window.ethereum.selectedAddress;
-    if (clientAddr) {
+  useEffect(() => {
+    async function fetchData() {
       setCoverValue(toCkb(await getTotalContractValue()).toFixed(4));
       setCoverCount(await getContractCount());
       setActiveCoverCount(await getActiveContractCount());
+    }
+    const clientAddr = window.ethereum.selectedAddress;
+    if (clientAddr) {
+      fetchData();
     }
   }, []);
 

@@ -18,20 +18,23 @@ export default function Contract({ contract }) {
   const [payoutValue, setPayoutValue] = useState(0);
   const [endDate, setEndDate] = useState(moment.unix(new Date()).format('L'));
 
-  useEffect(async () => {
-    const isContractActive = await getContractStatus(contract);
-    const isContractUtilized = await getContractPaid(contract);
-    const contractPremium = await getPremium(contract);
-    const coverValue = await getPayoutValue(contract);
-    const startDate = await getContractStartDate(contract);
-    const duration = await getDuration(contract);
-    setIsActive(isContractActive);
-    setUtilized(isContractUtilized);
-    setPremium(toCkb(contractPremium).toFixed(4));
-    setPayoutValue(toCkb(coverValue).toFixed(4));
-    setEndDate(
-      moment.unix(parseInt(startDate) + parseInt(duration)).format('L')
-    );
+  useEffect(() => {
+    async function fetchData() {
+      const isContractActive = await getContractStatus(contract);
+      const isContractUtilized = await getContractPaid(contract);
+      const contractPremium = await getPremium(contract);
+      const coverValue = await getPayoutValue(contract);
+      const startDate = await getContractStartDate(contract);
+      const duration = await getDuration(contract);
+      setIsActive(isContractActive);
+      setUtilized(isContractUtilized);
+      setPremium(toCkb(contractPremium).toFixed(4));
+      setPayoutValue(toCkb(coverValue).toFixed(4));
+      setEndDate(
+        moment.unix(parseInt(startDate) + parseInt(duration)).format('L')
+      );
+    }
+    fetchData();
   }, []);
 
   return (
