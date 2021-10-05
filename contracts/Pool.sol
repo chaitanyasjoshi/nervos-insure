@@ -8,7 +8,7 @@ contract Pool is ReentrancyGuard {
   InsuranceProvider private insuranceProvider;
 
   uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
-  uint public constant LOCKIN_PERIOD = 7;
+  uint public constant LOCKIN_PERIOD = 2;  // Cooldown period for withdrawals
 
   struct Details {
     uint depositStart;
