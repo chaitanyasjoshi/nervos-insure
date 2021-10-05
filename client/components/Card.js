@@ -46,8 +46,8 @@ export default function Card({ asset, type, premiumPct }) {
   };
 
   return (
-    <div className='p-6 w-96 mb-6 rounded-lg border border-gray-200 bg-white'>
-      <div className='flex items-center mb-3'>
+    <div className='p-6 w-96 rounded-lg border border-gray-200 bg-white'>
+      <div className='flex items-center mb-6'>
         <div className='pr-6'>
           <Image src={`/${asset}.png`} alt={asset} width='24' height='36' />
         </div>

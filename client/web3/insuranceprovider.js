@@ -1,5 +1,9 @@
+import { AddressTranslator } from 'nervos-godwoken-integration';
+
 import { getInstance } from './getInstance';
 import InsuranceProvider from './artifacts/InsuranceProvider.json';
+
+const addressTranslator = new AddressTranslator();
 
 export const newContract = async function (
   client,
@@ -18,7 +22,9 @@ export const newContract = async function (
 export const getClientContracts = async function (clientAddr) {
   const insuranceProvider = await getInstance(InsuranceProvider);
   const clientContracts = await insuranceProvider.methods
-    .getClientContracts(clientAddr)
+    .getClientContracts(
+      addressTranslator.ethAddressToGodwokenShortAddress(clientAddr)
+    )
     .call();
 
   return clientContracts;
@@ -83,11 +89,4 @@ export const getContractStatus = async function (contractAddr) {
     .call();
 
   return status;
-};
-
-export const getContractBalance = async function () {
-  const insuranceProvider = await getInstance(InsuranceProvider);
-  const balance = await insuranceProvider.methods.getContractBalance().call();
-
-  return balance;
 };
