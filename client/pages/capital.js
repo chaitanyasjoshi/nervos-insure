@@ -113,13 +113,13 @@ export default function Capital() {
         <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between py-10 border border-l-0 border-r-0 border-b-0 border-gray-700'>
             <Stat
-              title='Supplied capital'
+              title='My supplied capital'
               amount={suppliedCapital}
               unit='CKB'
               icon={<LibraryIcon className='block h-8 w-8 text-white' />}
             />
             <Stat
-              title='Active capital pools'
+              title='My active capital pools'
               amount={pools}
               icon={<ChartPieIcon className='block h-8 w-8 text-white' />}
             />
