@@ -25,7 +25,7 @@ export default function Cover() {
   const [coverCount, setCoverCount] = useState(0);
   const [activeCoverCount, setActiveCoverCount] = useState(0);
   const [clientAddr, setClientAddr] = useState(null);
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(1);
 
   useEffect(() => {
     fetchData();
@@ -39,16 +39,16 @@ export default function Cover() {
       setCoverValue(toCkb(await getTotalContractValue()).toFixed(4));
       setCoverCount(await getContractCount());
       setActiveCoverCount(await getActiveContractCount());
+      const web3 = await getWeb3();
+      const clientBalance = await web3.eth.getBalance(client);
+      setBalance(clientBalance);
     }
   }
 
   const buyCover = async function (cover, duration, premium) {
     if (cover > 0 && clientAddr) {
-      const web3 = await getWeb3();
-      const balance = await web3.eth.getBalance(clientAddr);
       const liquidity = await getReserveAvailableLiquidity();
       const totalCovered = await getTotalContractValue();
-      setBalance(balance);
       if (balance < fromCkb(premium)) {
         toast.error('Insufficient balance');
       } else if (fromCkb(cover) > liquidity - totalCovered) {

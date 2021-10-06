@@ -29,7 +29,7 @@ export default function Capital() {
   const [pools, setpools] = useState(0);
   const [totalApy, setTotalApy] = useState('-');
   const [clientAddr, setClientAddr] = useState(null);
-  const [balance, setBalance] = useState(0);
+  const [balance, setBalance] = useState(1);
 
   useEffect(() => {
     fetchData();
@@ -43,14 +43,15 @@ export default function Capital() {
       const balance = await balanceOf(window.ethereum.selectedAddress);
       setsuppliedCapital(toCkb(balance).toFixed(4));
       setpools(balance > 0 ? 1 : 0);
+
+      const web3 = await getWeb3();
+      const clientBalance = await web3.eth.getBalance(client);
+      setBalance(clientBalance);
     }
   }
 
   const supplyCapital = async function (supplyAmount) {
     if (supplyAmount > 0 && clientAddr) {
-      const web3 = await getWeb3();
-      const balance = await web3.eth.getBalance(clientAddr);
-      setBalance(balance);
       if (balance < fromCkb(supplyAmount)) {
         toast.error('Insufficient balance');
       } else {
