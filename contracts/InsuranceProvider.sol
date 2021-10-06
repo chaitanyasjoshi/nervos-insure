@@ -24,7 +24,7 @@ contract InsuranceProvider is Ownable {
   mapping(address => address[]) clientContract;
 
   constructor() {
-    registry = FeedRegistryInterface(0x1363bdCE312532F864e84924D54c7dA5eDB5B1BC);
+    registry = FeedRegistryInterface(0xb7975e4876FeD23c4c604dA2e8f0fA3B8601a2ac);
   }
     
   event contractCreated(address _insuranceContract, uint _premium, uint _totalCover);

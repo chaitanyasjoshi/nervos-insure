@@ -58,7 +58,7 @@ contract InsuranceContract is Ownable {
     uint _payoutValue, 
     uint _collateralValue) 
   {
-    registry = FeedRegistryInterface(0x1363bdCE312532F864e84924D54c7dA5eDB5B1BC);
+    registry = FeedRegistryInterface(0xb7975e4876FeD23c4c604dA2e8f0fA3B8601a2ac);
         
     insurer = InsuranceProvider(msg.sender);
     client = _client;
@@ -81,7 +81,7 @@ contract InsuranceContract is Ownable {
     checkEndContract();
 
     if (contractActive) {
-      currentValue = uint(getLatestPrice());
+      currentValue = uint(getTestPrice());
       currentValueDateChecked = block.timestamp;
       requestCount = requestCount.add(1);
       if(currentValue <= (collateralValue.mul(10)).div(100)) {
@@ -108,6 +108,12 @@ contract InsuranceContract is Ownable {
 
     contractActive = false;
     emit contractEnded(client, block.timestamp);
+  }
+
+  //This function is used for testing purpose only
+  function getTestPrice() internal pure returns (int) {
+    
+    return 20000000000;
   }
     
   function getLatestPrice() internal view returns (int) {
