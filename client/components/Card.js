@@ -2,15 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { newContract } from '../web3/insuranceprovider';
-import { fromCkb } from '../utils/utils';
-
-export default function Card({ asset, type, premiumPct }) {
+export default function Card({ asset, type, premiumPct, buyCover }) {
   const [duration, setDuration] = useState(30);
   const [cover, setCover] = useState(0);
   const [premium, setPremium] = useState(0);
-
-  const DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
 
   const calculatePremium = function (duration, cover) {
     const premiumPercentage = (premiumPct / 12) * (duration / 30);
@@ -27,17 +22,6 @@ export default function Card({ asset, type, premiumPct }) {
   const incrementDuration = function () {
     calculatePremium(duration + 30, cover);
     setDuration(duration + 30);
-  };
-
-  const buyCover = async function () {
-    if (cover > 0) {
-      await newContract(
-        window.ethereum.selectedAddress,
-        duration * DAY_IN_SECONDS,
-        fromCkb(premium),
-        fromCkb(cover)
-      );
-    }
   };
 
   const changeCover = function (event) {
@@ -109,7 +93,9 @@ export default function Card({ asset, type, premiumPct }) {
 
       <button
         className='py-2 w-full text-white bg-indigo-600 rounded-md'
-        onClick={buyCover}
+        onClick={() => {
+          buyCover(cover, duration, premium);
+        }}
       >
         Buy
       </button>

@@ -5,37 +5,79 @@ import {
   StatusOnlineIcon,
 } from '@heroicons/react/outline';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
 
+import { getReserveAvailableLiquidity } from '../web3/capitalpool';
+import { getWeb3 } from '../web3/getWeb3';
 import Stat from '../components/Stat';
 import Card from '../components/Card';
 import {
   getActiveContractCount,
   getContractCount,
   getTotalContractValue,
+  newContract,
 } from '../web3/insuranceprovider';
-import { toCkb } from '../utils/utils';
+import { fromCkb, toCkb } from '../utils/utils';
+import Banner from '../components/Banner';
 
 export default function Cover() {
   const [coverValue, setCoverValue] = useState(0);
   const [coverCount, setCoverCount] = useState(0);
   const [activeCoverCount, setActiveCoverCount] = useState(0);
+  const [clientAddr, setClientAddr] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
+    fetchData();
+    window.ethereum.on('accountsChanged', fetchData);
+  }, []);
+
+  async function fetchData() {
+    const client = window.ethereum.selectedAddress;
+    if (client) {
+      setClientAddr(client);
       setCoverValue(toCkb(await getTotalContractValue()).toFixed(4));
       setCoverCount(await getContractCount());
       setActiveCoverCount(await getActiveContractCount());
     }
-    const clientAddr = window.ethereum.selectedAddress;
-    if (clientAddr) {
-      fetchData();
+  }
+
+  const buyCover = async function (cover, duration, premium) {
+    if (cover > 0 && clientAddr) {
+      const web3 = await getWeb3();
+      const balance = await web3.eth.getBalance(clientAddr);
+      const liquidity = await getReserveAvailableLiquidity();
+      const totalCovered = await getTotalContractValue();
+      if (balance < fromCkb(premium)) {
+        toast.error('Insufficient balance');
+      } else if (fromCkb(cover) > liquidity - totalCovered) {
+        toast.error(
+          'The current Underwriting Capacity of this policy is not sufficient'
+        );
+      } else {
+        toast.promise(
+          newContract(
+            clientAddr,
+            duration * 60, //Seconds in a day. 60 for testing, 86400 for Production,
+            fromCkb(premium),
+            fromCkb(cover)
+          ),
+          {
+            loading: 'Creating new contract',
+            success: () => {
+              fetchData();
+              return 'Contract created successfully';
+            },
+            error: 'Failed to create contract',
+          }
+        );
+      }
     }
-  }, []);
+  };
 
   return (
-    <div className='bg-gray-50 font-roboto'>
+    <div className='bg-gray-50 min-h-screen font-roboto'>
       <Head>
-        <title>Insure: Get Covered</title>
+        <title>Insure</title>
         <meta name='description' content='Get covered' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
@@ -62,9 +104,15 @@ export default function Cover() {
         </div>
       </div>
       <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
+        {clientAddr ? null : <Banner />}
         <div className='py-10'>
           <div className='grid grid-cols-3 gap-6'>
-            <Card asset='ETH' type='Collateral Protection' premiumPct='5' />
+            <Card
+              asset='ETH'
+              type='Collateral Protection'
+              premiumPct='5'
+              buyCover={buyCover}
+            />
           </div>
         </div>
       </div>

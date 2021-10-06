@@ -1,39 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-import { fromCkb, toCkb } from '../utils/utils';
-import {
-  deposit,
-  getReserveAvailableLiquidity,
-  withdraw,
-} from '../web3/capitalpool';
+import { toCkb } from '../utils/utils';
+import { getReserveAvailableLiquidity } from '../web3/capitalpool';
 
-export default function Pool({ asset, type }) {
+export default function Pool({ asset, type, supplyCapital, withdrawCapital }) {
   const [tab, setTab] = useState(1);
   const [supplyAmount, setSupplyAmount] = useState(0);
   const [withdrawAmount, setWithdrawAmount] = useState(0);
   const [poolSupply, setPoolSupply] = useState(0);
 
   useEffect(() => {
-    async function fetchData() {
-      setPoolSupply(toCkb(await getReserveAvailableLiquidity()).toFixed(4));
-    }
-    if (window.ethereum.selectedAddress) {
-      fetchData();
-    }
+    fetchData();
+    window.ethereum.on('accountsChanged', fetchData);
   }, []);
 
-  const supplyCapital = async function () {
-    if (supplyAmount > 0) {
-      await deposit(fromCkb(supplyAmount), window.ethereum.selectedAddress);
+  async function fetchData() {
+    if (window.ethereum.selectedAddress) {
+      setPoolSupply(toCkb(await getReserveAvailableLiquidity()).toFixed(4));
     }
-  };
-
-  const withdrawCapital = async function () {
-    if (withdrawAmount > 0) {
-      await withdraw(fromCkb(withdrawAmount), window.ethereum.selectedAddress);
-    }
-  };
+  }
 
   return (
     <div className='p-6 w-96 rounded-lg border border-gray-200 bg-white'>
@@ -90,7 +76,7 @@ export default function Pool({ asset, type }) {
           </div>
           <button
             className='py-2 mt-6 w-full text-white bg-indigo-600 rounded-md'
-            onClick={supplyCapital}
+            onClick={() => supplyCapital(supplyAmount)}
           >
             Supply Capital
           </button>
@@ -113,7 +99,7 @@ export default function Pool({ asset, type }) {
           </div>
           <button
             className='py-2 mt-6 w-full text-white bg-indigo-600 rounded-md'
-            onClick={withdrawCapital}
+            onClick={() => withdrawCapital(withdrawAmount)}
           >
             Withdraw Capital
           </button>

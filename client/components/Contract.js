@@ -75,7 +75,7 @@ export default function Contract({ contract }) {
         </div>
         <div>
           <p className='text-sm font-light text-gray-500'>End Date</p>
-          <p className='text-sm'>{endDate}</p>
+          <p className='text-sm'>{isActive ? endDate : 'Ended'}</p>
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import {
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Loader from 'react-loader-spinner';
 
 import Stat from '../components/Stat';
 import { getClientContracts } from '../web3/insuranceprovider';
@@ -17,12 +18,15 @@ import {
 } from '../web3/insurancecontract';
 import { toCkb } from '../utils/utils';
 import Contract from '../components/Contract';
+import Banner from '../components/Banner';
 
 export default function Home() {
   const [contracts, setContracts] = useState([]);
   const [totalCover, setTotalCover] = useState(0);
   const [activeCovers, setActiveCovers] = useState(0);
   const [insuranceFee, setInsuranceFee] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [clientAddr, setClientAddr] = useState(null);
 
   useEffect(() => {
     fetchClientDetails();
@@ -30,10 +34,12 @@ export default function Home() {
   }, []);
 
   const fetchClientDetails = async function (_) {
-    const clientAddr = window.ethereum.selectedAddress;
+    const client = window.ethereum.selectedAddress;
 
-    if (clientAddr) {
-      const clientContracts = await getClientContracts(clientAddr);
+    if (client) {
+      setClientAddr(client);
+      setLoading(true);
+      const clientContracts = await getClientContracts(client);
       if (clientContracts.length !== 0) {
         setContracts(clientContracts);
         let totalPayout = 0;
@@ -52,18 +58,19 @@ export default function Home() {
         setTotalCover(totalPayout.toFixed(4));
         setInsuranceFee(totalfee.toFixed(4));
       }
+      setLoading(false);
     }
   };
 
   return (
-    <div className='bg-gray-50'>
+    <div className='bg-gray-50 min-h-screen font-roboto'>
       <Head>
-        <title>Insure: My Covers</title>
+        <title>Insure</title>
         <meta name='description' content='Client covers' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <div className='bg-gray-800'>
-        <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 font-roboto'>
+        <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
           <div className='flex flex-wrap items-center justify-between py-10 border border-l-0 border-r-0 border-b-0 border-gray-700'>
             <Stat
               title='My cover'
@@ -80,15 +87,19 @@ export default function Home() {
               title='Insurance fee'
               amount={insuranceFee}
               unit='CKB'
-              pm
               icon={<TagIcon className='block h-8 w-8 text-white' />}
             />
           </div>
         </div>
       </div>
-      <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 font-roboto'>
+      <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
+        {clientAddr ? null : <Banner />}
         <div className='py-10'>
-          {contracts.length == 0 ? (
+          {loading ? (
+            <div className='absolute left-1/2 -ml-20 top-1/2'>
+              <Loader type='Bars' color='#4338ca' height={100} width={100} />
+            </div>
+          ) : contracts.length == 0 ? (
             <div className='text-center'>
               <Image
                 src='/not_found.svg'

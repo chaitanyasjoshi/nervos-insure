@@ -97,10 +97,8 @@ contract Pool is ReentrancyGuard {
 
     if(_updatedBalance == 0) {
       capitalProviders[msg.sender].depositStart = 0;
-      capitalProviders[msg.sender].balance = _updatedBalance;
-    } else {
-      capitalProviders[msg.sender].balance = _updatedBalance;
     }
+    capitalProviders[msg.sender].balance = _updatedBalance;
 
     (bool success, ) = msg.sender.call{value: _amount}("");
     require(success, "CKB transfer failed.");
@@ -145,6 +143,6 @@ contract Pool is ReentrancyGuard {
   function getWithdrawalUnlockDate(address _client) public view returns (uint) {
     Details memory providerDetails = capitalProviders[_client];
 
-    return providerDetails.depositStart + LOCKIN_PERIOD;
+    return providerDetails.depositStart + DAY_IN_SECONDS * LOCKIN_PERIOD;
   }
 }
