@@ -6,7 +6,15 @@ import '../styles/globals.css';
 function MyApp({ Component, pageProps }) {
   return (
     <div>
-      <Toaster position='top-right' />
+      <Toaster
+        position='top-right'
+        toastOptions={{
+          style: {
+            minWidth: '250px',
+            fontFamily: 'roboto',
+          },
+        }}
+      />
       <Navbar />
       <Component {...pageProps} />
     </div>

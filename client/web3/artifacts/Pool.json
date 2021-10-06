@@ -98,8 +98,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
@@ -112,16 +111,14 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [],
       "name": "deposit",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function",
-      "payable": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -165,8 +162,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -185,8 +181,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     },
     {
       "inputs": [
@@ -205,8 +200,7 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function",
-      "constant": true
+      "type": "function"
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.7+commit.e28d00a7\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_insuranceProvider\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_client\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_payoutValue\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_time\",\"type\":\"uint256\"}],\"name\":\"Claim\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_client\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_timeStart\",\"type\":\"uint256\"}],\"name\":\"Deposit\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_client\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_time\",\"type\":\"uint256\"}],\"name\":\"Withdraw\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DAY_IN_SECONDS\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"LOCKIN_PERIOD\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_client\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_client\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"_payoutValue\",\"type\":\"uint256\"}],\"name\":\"claimContract\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"deposit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getReserveAvailableLiquidity\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_client\",\"type\":\"address\"}],\"name\":\"getWithdrawalUnlockDate\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"}],\"name\":\"withdraw\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{\"balanceOf(address)\":{\"details\":\"Explain to a developer any extra details\",\"params\":{\"_client\":\"polyjuice address of client\"},\"returns\":{\"_0\":\"balance of deposited funds of client*\"}},\"getWithdrawalUnlockDate(address)\":{\"details\":\"Explain to a developer any extra details\",\"params\":{\"_client\":\"polyjuice address of client\"},\"returns\":{\"_0\":\"fund unlock date off client*\"}}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"balanceOf(address)\":{\"notice\":\"Explain to an end user what this does\"},\"getWithdrawalUnlockDate(address)\":{\"notice\":\"Explain to an end user what this does\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Pool.sol\":\"Pool\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@chainlink/contracts/src/v0.8/interfaces/AggregatorInterface.sol\":{\"keccak256\":\"0x1a5dc81544a6479f64437a8aca22c869769dd54ee3522c7ef5ebae0d329a28f0\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9544e5f221602c96c49f71fb9fba7b4b891f33e9826b8ddabaa442c36510ed47\",\"dweb:/ipfs/QmYzzrVrvjMwe6aYNKb8dWMroXboTK2UnzB7TM9Wnu9GNo\"]},\"@chainlink/contracts/src/v0.8/interfaces/AggregatorV2V3Interface.sol\":{\"keccak256\":\"0xe8f8d98b515366730824d24269c7267eee7f0288cf737db8659acbb0c751eb53\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://31c63ea2f6dca3cd37bfb3a208a3582271aa8550af22843bb0e1f1cb911bf3e2\",\"dweb:/ipfs/QmTEMtuqHK4etxdMHrqg5m7rvodUnYHAE9PtZZe1Cm9Qk9\"]},\"@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol\":{\"keccak256\":\"0xe6f5ac8c47f3b9b6135051efb9216f9ba5b312a6ecc20209b4f66a780443c328\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://ded4aa77b7b8f222a2d992eb95b03592be3250b826b6a38a4c790d2dec8b0d47\",\"dweb:/ipfs/QmNUKpTKXWsBBNMyzZuYvEZ2pUhZ2zEhQuyvxYZpTwo4eT\"]},\"@chainlink/contracts/src/v0.8/interfaces/FeedRegistryInterface.sol\":{\"keccak256\":\"0x016d081db2915d0455d148fe805f409200d214bb3c7dfad6e4de139e65d7f893\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fad52b6ad0b91e029ae2b1897598a0338da01a235bf240d7040c1dc8797017a9\",\"dweb:/ipfs/QmTLPG8YFWSNFQ9PXdMNf8ka7disBk5AUtwAfSADQuufSF\"]},\"@openzeppelin/contracts/access/Ownable.sol\":{\"keccak256\":\"0x6bb804a310218875e89d12c053e94a13a4607cdf7cc2052f3e52bd32a0dc50a1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b2ebbbe6d0011175bd9e7268b83de3f9c2f9d8d4cbfbaef12aff977d7d727163\",\"dweb:/ipfs/Qmd5c7Vxtis9wzkDNhxwc6A2QT5H9xn9kfjhx7qx44vpro\"]},\"@openzeppelin/contracts/security/ReentrancyGuard.sol\":{\"keccak256\":\"0x842ccf9a6cd33e17b7acef8372ca42090755217b358fe0c44c98e951ea549d3a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6cc5f36034a77d105263ae6d8cc18b16260b4a0f6cdb1a26f21ba3670fdd06dd\",\"dweb:/ipfs/QmdJrJ2LoG546BkfyZPta96BNmaVBfqZoh8kq7PqHuQyPk\"]},\"@openzeppelin/contracts/utils/Context.sol\":{\"keccak256\":\"0x90565a39ae45c80f0468dc96c7b20d0afc3055f344c8203a0c9258239f350b9f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://26e8b38a7ac8e7b4463af00cf7fff1bf48ae9875765bf4f7751e100124d0bc8c\",\"dweb:/ipfs/QmWcsmkVr24xmmjfnBQZoemFniXjj3vwT78Cz6uqZW1Hux\"]},\"@openzeppelin/contracts/utils/Counters.sol\":{\"keccak256\":\"0x78450f4e3b722cce467b21e285f72ce5eaf361e9ba9dd2241a413926246773cd\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f103065051300cd995fd4599ba91188d4071b92175b52f26110e02db091617c0\",\"dweb:/ipfs/QmSyDz67R2HCypDE8Pacn3voVwxw9x17NM66q47YgBnGqc\"]},\"@openzeppelin/contracts/utils/math/SafeMath.sol\":{\"keccak256\":\"0x8666f020bd8fc9dc14f07e2ebc52b5f236ab4cdde7c77679b08cb2f94730043b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://163776cbf565c722232393aa2d62cbe8a2ffb5805986abf4906c00e1e07450a6\",\"dweb:/ipfs/QmPZoN9T3cb6o8bGhjBPZcz7im8T8DWhpr3tjLwhJJHx9N\"]},\"project:/contracts/Denominations.sol\":{\"keccak256\":\"0x6a8ebffc06f3a2a4f531ca8ec143b35187aa9eb2182ec6e2feaf3e7d3b8ec03e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f4c5e03387f5e4c16336313e3a480b0612cc38bd020dedd0495afa928f22286b\",\"dweb:/ipfs/QmeVst2jR5y8Rh7DtCzPWNSPNrzQmXaQ9DjmKHxCrFpVST\"]},\"project:/contracts/InsuranceContract.sol\":{\"keccak256\":\"0x41a51c7d5c0c41966892b3326d8f1ab94afb08382469eafaf09b5892cadc6e7c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e2250f21fdbf25982982a8bf6edd0efa4ec8ffe129a46969c73938eb7daaf5a6\",\"dweb:/ipfs/Qmf2weQHi7wVXCVDrFjaC8wo3joxuYbQCnBJXx6mEQbW9e\"]},\"project:/contracts/InsuranceProvider.sol\":{\"keccak256\":\"0x1c8a3fa8e6c2af2745db202c4576aceb7fa705609eb5b4946a7e9e32c4235391\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bc3a681bd633f13518877b519b775c4299b744f73bf28123ac2a61bfd3235bb2\",\"dweb:/ipfs/QmQvDcKzVS7hwwZXiaHqrJVLSNLEfDZshCcYZ6DWVCXny4\"]},\"project:/contracts/Pool.sol\":{\"keccak256\":\"0x3874b5ed5ba98a4bffffed8cf4a960a522f553da72f0afd4a3e18a2998bb3db9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://34ccede7a066394890337b3b953e1807097fe6ea845105a6d9864aa0c018f526\",\"dweb:/ipfs/QmQqFfsAMtyiBrimYCv3c2PrHFhoXtnhhX6ZDcEnq79Zpo\"]}},\"version\":1}",
@@ -19613,8 +19607,7 @@
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-10-06T08:06:55.258Z",
-  "networkType": "ethereum",
+  "updatedAt": "2021-10-06T09:24:15.105Z",
   "devdoc": {
     "kind": "dev",
     "methods": {

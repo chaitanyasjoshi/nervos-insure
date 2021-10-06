@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ExclamationCircleIcon, XIcon } from '@heroicons/react/outline';
 
-export default function Banner() {
+export default function Banner({ msgShort, msgLong, link }) {
   const [closed, setClosed] = useState(false);
 
   return (
@@ -14,10 +14,19 @@ export default function Banner() {
               aria-hidden='true'
             />
             <p className='ml-3 font-normal text-white truncate'>
-              <span className='md:hidden'>No account connected!</span>
+              <span className='md:hidden'>{msgShort}</span>
               <span className='hidden md:inline'>
-                No account connected! Please connect your account through
-                metamask to use this app.
+                {msgLong}
+                {link ? (
+                  <a
+                    className='underline'
+                    href='https://github.com/Kuzirashi/gw-gitcoin-instruction/blob/master/src/component-tutorials/4.layer2.deposit.md'
+                  >
+                    here.
+                  </a>
+                ) : (
+                  ''
+                )}
               </span>
             </p>
           </div>

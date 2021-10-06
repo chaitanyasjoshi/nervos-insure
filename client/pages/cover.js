@@ -25,6 +25,7 @@ export default function Cover() {
   const [coverCount, setCoverCount] = useState(0);
   const [activeCoverCount, setActiveCoverCount] = useState(0);
   const [clientAddr, setClientAddr] = useState(null);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -47,6 +48,7 @@ export default function Cover() {
       const balance = await web3.eth.getBalance(clientAddr);
       const liquidity = await getReserveAvailableLiquidity();
       const totalCovered = await getTotalContractValue();
+      setBalance(balance);
       if (balance < fromCkb(premium)) {
         toast.error('Insufficient balance');
       } else if (fromCkb(cover) > liquidity - totalCovered) {
@@ -104,7 +106,20 @@ export default function Cover() {
         </div>
       </div>
       <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
-        {clientAddr ? null : <Banner />}
+        {clientAddr ? null : (
+          <Banner
+            msgShort='No account connected!'
+            msgLong='No account connected! Please connect your account through
+                metamask to use this app.'
+          />
+        )}
+        {balance > 0 ? null : (
+          <Banner
+            msgShort='No account balance!'
+            msgLong='No account balance! Your account has zero balance. To get some balance follow the instructions given '
+            link
+          />
+        )}
         <div className='py-10'>
           <div className='grid grid-cols-3 gap-6'>
             <Card

@@ -29,6 +29,7 @@ export default function Capital() {
   const [pools, setpools] = useState(0);
   const [totalApy, setTotalApy] = useState('-');
   const [clientAddr, setClientAddr] = useState(null);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     fetchData();
@@ -49,6 +50,7 @@ export default function Capital() {
     if (supplyAmount > 0 && clientAddr) {
       const web3 = await getWeb3();
       const balance = await web3.eth.getBalance(clientAddr);
+      setBalance(balance);
       if (balance < fromCkb(supplyAmount)) {
         toast.error('Insufficient balance');
       } else {
@@ -130,7 +132,20 @@ export default function Capital() {
         </div>
       </div>
       <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
-        {clientAddr ? null : <Banner />}
+        {clientAddr ? null : (
+          <Banner
+            msgShort='No account connected!'
+            msgLong='No account connected! Please connect your account through
+                metamask to use this app.'
+          />
+        )}
+        {balance > 0 ? null : (
+          <Banner
+            msgShort='No account balance!'
+            msgLong='No account balance! Your account has zero balance. To get some balance follow the instructions given '
+            link
+          />
+        )}
         <div className='py-10'>
           <div className='grid grid-cols-3 gap-6'>
             <Pool

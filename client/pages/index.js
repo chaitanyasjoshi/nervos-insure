@@ -93,7 +93,13 @@ export default function Home() {
         </div>
       </div>
       <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
-        {clientAddr ? null : <Banner />}
+        {clientAddr ? null : (
+          <Banner
+            msgShort='No account connected!'
+            msgLong='No account connected! Please connect your account through
+                metamask to use this app.'
+          />
+        )}
         <div className='py-10'>
           {loading ? (
             <div className='absolute left-1/2 -ml-20 top-1/2'>
