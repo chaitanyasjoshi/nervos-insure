@@ -46,6 +46,7 @@ export default function Home() {
         let activeCount = 0;
         let totalfee = 0;
         for (const contract of clientContracts) {
+          console.log(contract);
           const payoutValue = await getPayoutValue(contract);
           const premium = await getPremium(contract);
           const isActive = await getContractStatus(contract);

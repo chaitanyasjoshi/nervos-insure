@@ -113,13 +113,6 @@ export default function Cover() {
                 metamask to use this app.'
           />
         )}
-        {balance > 0 ? null : (
-          <Banner
-            msgShort='No account balance!'
-            msgLong='No account balance! Your account has zero balance. To get some balance follow the instructions given '
-            link
-          />
-        )}
         <div className='py-10'>
           <div className='grid grid-cols-3 gap-6'>
             <Card
