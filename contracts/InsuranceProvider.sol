@@ -16,7 +16,7 @@ contract InsuranceProvider is Ownable {
   FeedRegistryInterface internal registry;
   Pool private capitalPool;
   
-  uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
+  uint public constant DAY_IN_SECONDS = 86400; //Seconds in a day. 60 for testing, 86400 for Production
   
   Counters.Counter private _contractCount;
   address[] contracts;

@@ -12,7 +12,7 @@ contract InsuranceContract is Ownable {
   using SafeMath for uint;
   FeedRegistryInterface internal registry;
 
-  uint public constant DAY_IN_SECONDS = 60; //Seconds in a day. 60 for testing, 86400 for Production
+  uint public constant DAY_IN_SECONDS = 86400; //Seconds in a day. 60 for testing, 86400 for Production
 
   InsuranceProvider public insurer;
   address payable client;

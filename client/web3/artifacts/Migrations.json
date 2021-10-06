@@ -12,7 +12,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -25,7 +26,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -2307,28 +2309,13 @@
     "71393": {
       "events": {},
       "links": {},
-      "address": "0xAaD91F3fd89a67E5C0c5440c80A9fdA889798167",
-      "transactionHash": "0xc1b3430c8c3474fa1cb695c0d392791abf280a98bcfe44557f1b5c4cad4530cb"
-    },
-    "1024777": {
-      "events": {},
-      "links": {},
-<<<<<<< Updated upstream
-      "address": "0x4c309BCc179EB48C7FA3333758A0cb5B580E114E",
-      "transactionHash": "0xabd7f4a923604f7e89ddef4c5235f680b3609fca27429366dd6b1ebe58d4ae72"
+      "address": "0xC295e240AfadC2F7d11B7555C859Cc83d0a32bA5",
+      "transactionHash": "0x5e694b6fffd7cb117466bb967459a6ddd29d5c93d6613e72a7e09f85f5114cfc"
     }
   },
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-10-06T09:24:15.097Z",
-=======
-      "address": "0x8EF86774d5644727067f6A73883667825C7578f0",
-      "transactionHash": "0xe5e8efbf42c62892a7042aa601905f1931875d3321f1dd9b9ccf70b8ce953130"
-    }
-  },
-  "schemaVersion": "3.4.3",
-  "updatedAt": "2021-10-06T14:52:46.551Z",
+  "updatedAt": "2021-10-06T15:45:15.683Z",
   "networkType": "ethereum",
->>>>>>> Stashed changes
   "devdoc": {
     "kind": "dev",
     "methods": {},

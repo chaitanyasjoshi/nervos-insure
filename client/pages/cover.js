@@ -59,7 +59,7 @@ export default function Cover() {
         toast.promise(
           newContract(
             clientAddr,
-            duration * 60, //Seconds in a day. 60 for testing, 86400 for Production,
+            duration * 86400, //Seconds in a day. 60 for testing, 86400 for Production,
             fromCkb(premium),
             fromCkb(cover)
           ),
