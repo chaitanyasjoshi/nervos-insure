@@ -11,13 +11,19 @@
   <hr>
 </div>
 
-## Features:
+## Features
 
 - Collateral protection for your tokens and tokenized assets
 - Pay a one time premium
 - Supply capital to earn APY
 - Withdraw your funds anytime
 - Automated price updates using oracles
+
+## Future work
+- Setup CRON service for price update
+- Inclusion of ERC20 tokens
+- Inclusion of ERC721 tokenized assets
+- DAO
 
 ## Devnet setup
 - If you want to develop and run the project locally make sure you switch to *devnet* branch.
