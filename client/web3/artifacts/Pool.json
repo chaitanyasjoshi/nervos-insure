@@ -19602,12 +19602,22 @@
     "1024777": {
       "events": {},
       "links": {},
+<<<<<<< Updated upstream
       "address": "0x6072FdecD3f5Ede983Eeb06AD17da6870E074f1E",
       "transactionHash": "0x3f15722eaa94c2612a3173e076f91bac46432f643b04c538555f7ec5711efe52"
     }
   },
   "schemaVersion": "3.4.3",
   "updatedAt": "2021-10-06T09:24:15.105Z",
+=======
+      "address": "0x54f8602733D6e7BeC251A58f91c55c26f71D5762",
+      "transactionHash": "0xe08c1e76fadb40f0befe93ec2923e2e5f93f9c5d147f769a3877b5ffaa43190e"
+    }
+  },
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-10-06T14:52:46.541Z",
+  "networkType": "ethereum",
+>>>>>>> Stashed changes
   "devdoc": {
     "kind": "dev",
     "methods": {

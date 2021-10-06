@@ -20360,12 +20360,22 @@
         }
       },
       "links": {},
+<<<<<<< Updated upstream
       "address": "0x451D5654435Bc4AFB29005fb2CAF49f6a5aA3ae3",
       "transactionHash": "0x2fc7b319f65159e2debb1fa72999bcc03a46ac350ac00a131c621d74dd82fcc4"
     }
   },
   "schemaVersion": "3.4.3",
   "updatedAt": "2021-10-06T09:24:15.087Z",
+=======
+      "address": "0xC0A1892946FD8C1645a0896aa8d0F9156F2E4D3D",
+      "transactionHash": "0x7ddac62284f2354e4708464ce97ad9716b79c1745d9a648b7590cd420ee5bb94"
+    }
+  },
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-10-06T14:52:46.526Z",
+  "networkType": "ethereum",
+>>>>>>> Stashed changes
   "devdoc": {
     "kind": "dev",
     "methods": {

@@ -2313,12 +2313,22 @@
     "1024777": {
       "events": {},
       "links": {},
+<<<<<<< Updated upstream
       "address": "0x4c309BCc179EB48C7FA3333758A0cb5B580E114E",
       "transactionHash": "0xabd7f4a923604f7e89ddef4c5235f680b3609fca27429366dd6b1ebe58d4ae72"
     }
   },
   "schemaVersion": "3.4.3",
   "updatedAt": "2021-10-06T09:24:15.097Z",
+=======
+      "address": "0x8EF86774d5644727067f6A73883667825C7578f0",
+      "transactionHash": "0xe5e8efbf42c62892a7042aa601905f1931875d3321f1dd9b9ccf70b8ce953130"
+    }
+  },
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-10-06T14:52:46.551Z",
+  "networkType": "ethereum",
+>>>>>>> Stashed changes
   "devdoc": {
     "kind": "dev",
     "methods": {},
