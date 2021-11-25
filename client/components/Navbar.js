@@ -2,39 +2,36 @@ import { Disclosure } from '@headlessui/react';
 import { MenuIcon, XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { getWeb3 } from '../web3/getWeb3';
 
 const navigation = [
-  { name: 'MY COVERS', href: '/', current: true },
-  { name: 'GET COVERED', href: '/cover', current: false },
-  { name: 'SUPPLY CAPITAL', href: '/capital', current: false },
+  { name: 'MY COVERS', href: '/' },
+  { name: 'GET COVERED', href: '/cover' },
+  { name: 'SUPPLY CAPITAL', href: '/capital' },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
-
 export default function Navbar() {
-  const [web3, setWeb3] = useState(null);
-  const [account, setAccount] = useState(null);
+  const [userAddress, setUserAddress] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     setAddress();
   }, []);
 
   const connect = async function () {
-    const web3 = await getWeb3();
-    setWeb3(web3);
+    await getWeb3();
     setAddress();
   };
 
   const setAddress = function () {
-    const account = window.ethereum.selectedAddress;
-    setAccount(account);
+    const address = ethereum.selectedAddress;
+    if (address) setUserAddress(address);
   };
 
   return (
-    <Disclosure as='nav' className='bg-gray-800 font-roboto'>
+    <Disclosure as='nav' className='bg-gray-900 font-inter'>
       {({ open }) => (
         <>
           <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
@@ -54,13 +51,13 @@ export default function Navbar() {
                 <div className='flex-shrink-0 flex items-center'>
                   <img
                     className='block lg:hidden h-auto w-40'
-                    src='/logo.png'
+                    src='/static/images/logo.png'
                     alt='Insure'
                   />
                   <img
                     className='hidden lg:block h-auto w-40'
-                    src='/logo.png'
-                    alt='Inure'
+                    src='/static/images/logo.png'
+                    alt='Insure'
                   />
                 </div>
                 <div className='hidden sm:block sm:m-auto'>
@@ -68,19 +65,12 @@ export default function Navbar() {
                     {navigation.map((item) => (
                       <Link href={item.href} key={item.name}>
                         <a
-                          className={classNames(
-                            item.current
+                          className={`${
+                            router.pathname === item.href
                               ? 'text-white'
-                              : 'text-gray-300 hover:text-white',
-                            'px-3 py-2 rounded-md text-sm font-medium'
-                          )}
-                          aria-current={item.current ? 'page' : undefined}
-                          onClick={() => {
-                            navigation.forEach((item) => {
-                              item.current = false;
-                            });
-                            item.current = true;
-                          }}
+                              : 'text-gray-300 hover:text-white'
+                          }
+                            ' px-3 py-2 rounded-md text-sm font-medium'`}
                         >
                           {item.name}
                         </a>
@@ -90,12 +80,14 @@ export default function Navbar() {
                 </div>
               </div>
               <button
-                className='bg-indigo-700 text-white text-sm w-48 py-2 rounded-md'
+                className='bg-indigo-700 text-white font-medium w-max px-6 py-2 rounded-lg'
                 onClick={connect}
               >
-                {account
-                  ? `${account.slice(0, 14)}...${account.slice(-4)}`
-                  : 'Connect wallet'}
+                <span>
+                  {userAddress
+                    ? `${userAddress.slice(0, 10)}...${userAddress.slice(-4)}`
+                    : 'Connect Wallet'}
+                </span>
               </button>
             </div>
           </div>
@@ -105,13 +97,12 @@ export default function Navbar() {
               {navigation.map((item) => (
                 <Link href={item.href} key={item.name}>
                   <a
-                    className={classNames(
-                      item.current
+                    className={`${
+                      router.pathname === item.href
                         ? 'bg-gray-900 text-white'
-                        : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'block px-3 py-2 rounded-md text-base font-medium'
-                    )}
-                    aria-current={item.current ? 'page' : undefined}
+                        : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                    }
+                      ' block px-3 py-2 rounded-md text-base font-medium'`}
                   >
                     {item.name}
                   </a>

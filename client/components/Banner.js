@@ -1,19 +1,19 @@
 import React, { useState } from 'react';
-import { ExclamationCircleIcon, XIcon } from '@heroicons/react/outline';
+import { ExclamationIcon, XIcon } from '@heroicons/react/outline';
 
 export default function Banner({ msgShort, msgLong, link }) {
   const [closed, setClosed] = useState(false);
 
   return (
-    <div className={`${closed ? 'hidden' : ''} mt-3 bg-indigo-600 rounded-md`}>
+    <div className={`${closed && 'hidden'} mb-3 bg-yellow-100 rounded-md`}>
       <div className='max-w-7xl mx-auto py-2 px-3 sm:px-6 lg:px-8'>
         <div className='flex items-center justify-between flex-wrap'>
           <div className='w-0 flex-1 flex items-center'>
-            <ExclamationCircleIcon
-              className='h-6 w-6 text-white'
+            <ExclamationIcon
+              className='h-5 w-5 text-yellow-500'
               aria-hidden='true'
             />
-            <p className='ml-3 font-normal text-white truncate'>
+            <p className='ml-3 text-sm font-medium text-gray-800 truncate'>
               <span className='md:hidden'>{msgShort}</span>
               <span className='hidden md:inline'>
                 {msgLong}
@@ -34,10 +34,10 @@ export default function Banner({ msgShort, msgLong, link }) {
             <button
               type='button'
               onClick={() => setClosed(true)}
-              className='-mr-1 flex p-2 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2'
+              className='-mr-1 flex p-2 rounded-md hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-white sm:-mr-2'
             >
               <span className='sr-only'>Dismiss</span>
-              <XIcon className='h-6 w-6 text-white' aria-hidden='true' />
+              <XIcon className='h-5 w-5 text-yellow-500' aria-hidden='true' />
             </button>
           </div>
         </div>

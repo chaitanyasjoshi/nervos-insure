@@ -1,15 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { toast } from 'react-hot-toast';
 import moment from 'moment';
-
-import Stat from '../components/Stat';
 import {
   ChartPieIcon,
   LibraryIcon,
   TrendingUpIcon,
 } from '@heroicons/react/outline';
-import { useEffect, useState } from 'react';
 
 import {
   balanceOf,
@@ -18,47 +15,74 @@ import {
   getWithdrawalUnlockDate,
   withdraw,
 } from '../web3/capitalpool';
-import { fromCkb, toCkb } from '../utils/utils';
+import { toShannon, fromShannon } from '../utils/utils';
 import { getWeb3 } from '../web3/getWeb3';
 
+import Stat from '../components/Stat';
 import Pool from '../components/Pool';
 import Banner from '../components/Banner';
+import Loader from 'react-loader-spinner';
 
 export default function Capital() {
   const [suppliedCapital, setsuppliedCapital] = useState(0);
   const [pools, setpools] = useState(0);
   const [totalApy, setTotalApy] = useState('-');
-  const [clientAddr, setClientAddr] = useState(null);
-  const [balance, setBalance] = useState(1);
+  const [userAddress, setUserAddress] = useState(null);
+  const [userBalance, setUserBalance] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const stats = [
+    {
+      title: 'MY SUPPLIED CAPITAL',
+      amount: suppliedCapital,
+      unit: 'CKB',
+      icon: <LibraryIcon className='block h-8 w-8 text-white' />,
+    },
+    {
+      title: 'MY ACTIVE POOLS',
+      amount: pools,
+      icon: <ChartPieIcon className='block h-8 w-8 text-white' />,
+    },
+    {
+      title: 'TOTAL APY',
+      amount: totalApy,
+      unit: '%',
+      icon: <TrendingUpIcon className='block h-8 w-8 text-white' />,
+    },
+  ];
 
   useEffect(() => {
-    fetchData();
-    window.ethereum.on('accountsChanged', fetchData);
+    fetchUserDetails();
+    ethereum.on('accountsChanged', fetchUserDetails);
+    return () => {
+      ethereum.removeListener('accountsChanged', fetchUserDetails);
+    };
   }, []);
 
-  async function fetchData() {
-    const client = window.ethereum.selectedAddress;
-    if (client) {
-      setClientAddr(client);
-      const balance = await balanceOf(window.ethereum.selectedAddress);
-      setsuppliedCapital(toCkb(balance).toFixed(4));
-      setpools(balance > 0 ? 1 : 0);
+  async function fetchUserDetails() {
+    setLoading(true);
+    const address = ethereum.selectedAddress;
+    if (address) {
+      setUserAddress(address);
+      const userDeposit = await balanceOf(ethereum.selectedAddress);
+      setsuppliedCapital(parseFloat(fromShannon(userDeposit)).toFixed(4));
+      setpools(userDeposit > 0 ? 1 : 0);
 
       const web3 = await getWeb3();
-      const clientBalance = await web3.eth.getBalance(client);
-      setBalance(clientBalance);
+      setUserBalance(await web3.eth.getBalance(address));
     }
+    setLoading(false);
   }
 
   const supplyCapital = async function (supplyAmount) {
-    if (supplyAmount > 0 && clientAddr) {
-      if (balance < fromCkb(supplyAmount)) {
+    if (supplyAmount && userAddress) {
+      if (userBalance < toShannon(supplyAmount)) {
         toast.error('Insufficient balance');
       } else {
-        toast.promise(deposit(fromCkb(supplyAmount), clientAddr), {
+        toast.promise(deposit(toShannon(supplyAmount), userAddress), {
           loading: 'Depositing capital...',
           success: () => {
-            fetchData();
+            fetchUserDetails();
             return 'Deposit successful';
           },
           error: 'Deposit failed',
@@ -68,29 +92,29 @@ export default function Capital() {
   };
 
   const withdrawCapital = async function (withdrawAmount) {
-    if (withdrawAmount > 0 && clientAddr) {
-      const deposit = await balanceOf(clientAddr);
-      const liquidity = await getReserveAvailableLiquidity();
-      const unlockDate = await getWithdrawalUnlockDate(clientAddr);
-      if (deposit < fromCkb(withdrawAmount)) {
+    if (withdrawAmount && userAddress) {
+      const userDeposit = await balanceOf(userAddress);
+      const poolLiquidity = await getReserveAvailableLiquidity();
+      const userDepositUnlockDate = await getWithdrawalUnlockDate(userAddress);
+      if (userDeposit < toShannon(withdrawAmount)) {
         toast.error(
           'Deposited capital is insufficient to proceed with withdrawal'
         );
-      } else if (fromCkb(withdrawAmount) > liquidity) {
+      } else if (toShannon(withdrawAmount) > poolLiquidity) {
         toast.error(
           'Capital pool liquidity is insufficient to proceed with withdrawal'
         );
-      } else if (moment.unix(new Date()) < unlockDate) {
+      } else if (moment.unix(new Date()) < userDepositUnlockDate) {
         toast.error(
           `Your funds will be unlocked for withdrawal on ${moment
-            .unix(unlockDate)
+            .unix(userDepositUnlockDate)
             .format('L')}`
         );
       } else {
-        toast.promise(withdraw(fromCkb(withdrawAmount), clientAddr), {
+        toast.promise(withdraw(toShannon(withdrawAmount), userAddress), {
           loading: 'Withdrawing capital...',
           success: () => {
-            fetchData();
+            fetchUserDetails();
             return 'Withdrawal successful';
           },
           error: 'Withdrawal failed',
@@ -100,7 +124,7 @@ export default function Capital() {
   };
 
   return (
-    <div className='bg-gray-50 min-h-screen font-roboto'>
+    <div className='font-inter'>
       <Head>
         <title>Insure</title>
         <meta
@@ -109,53 +133,52 @@ export default function Capital() {
         />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <div className='bg-gray-800'>
+      <div className='bg-gray-900'>
         <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
-          <div className='flex items-center justify-between py-10 border border-l-0 border-r-0 border-b-0 border-gray-700'>
-            <Stat
-              title='My supplied capital'
-              amount={suppliedCapital}
-              unit='CKB'
-              icon={<LibraryIcon className='block h-8 w-8 text-white' />}
-            />
-            <Stat
-              title='My active capital pools'
-              amount={pools}
-              icon={<ChartPieIcon className='block h-8 w-8 text-white' />}
-            />
-            <Stat
-              title='Total APY'
-              amount={totalApy}
-              unit='%'
-              icon={<TrendingUpIcon className='block h-8 w-8 text-white' />}
-            />
+          <div className='flex items-center justify-between py-10 border-t border-gray-700'>
+            {stats.map((stat) => (
+              <Stat
+                key={stat.title}
+                title={stat.title}
+                amount={stat.amount}
+                unit={stat.unit}
+                icon={stat.icon}
+              />
+            ))}
           </div>
         </div>
       </div>
       <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
-        {clientAddr ? null : (
-          <Banner
-            msgShort='No account connected!'
-            msgLong='No account connected! Please connect your account through
-                metamask to use this app.'
-          />
-        )}
-        {balance > 0 ? null : (
-          <Banner
-            msgShort='No account balance!'
-            msgLong='No account balance! Your account has zero balance. To get some balance follow the instructions given '
-            link
-          />
-        )}
         <div className='py-10'>
-          <div className='grid grid-cols-3 gap-6'>
-            <Pool
-              asset='ETH'
-              type='Collateral Protection'
-              supplyCapital={supplyCapital}
-              withdrawCapital={withdrawCapital}
+          {!loading && !userAddress && (
+            <Banner
+              msgShort='No account connected!'
+              msgLong='No account connected! Please connect your account through
+                metamask to use this app.'
             />
-          </div>
+          )}
+          {!loading && userAddress && !userBalance && (
+            <Banner
+              msgShort='No account balance!'
+              msgLong='No account balance! Your account has zero balance. To get some balance follow the instructions given '
+              link
+            />
+          )}
+
+          {loading ? (
+            <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'>
+              <Loader type='Oval' color='#4338ca' height={100} width={100} />
+            </div>
+          ) : (
+            <div className='grid grid-cols-3 gap-6'>
+              <Pool
+                asset='ETH'
+                type='Collateral Protection'
+                supplyCapital={supplyCapital}
+                withdrawCapital={withdrawCapital}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>

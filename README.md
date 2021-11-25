@@ -1,6 +1,6 @@
 <div>
   <p align="center">
-    <img src="client/public/logo.png" width="200px" alt="Insure">
+    <img src="client/public/static/images/logo.png" width="200px" alt="Insure">
   </p>
   <hr>
   <h2 align="center">Insure DeFi</h2>

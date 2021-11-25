@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 
-import { toCkb } from '../utils/utils';
+import { fromShannon } from '../utils/utils';
 import { getReserveAvailableLiquidity } from '../web3/capitalpool';
 
 export default function Pool({ asset, type, supplyCapital, withdrawCapital }) {
@@ -11,13 +11,18 @@ export default function Pool({ asset, type, supplyCapital, withdrawCapital }) {
   const [poolSupply, setPoolSupply] = useState(0);
 
   useEffect(() => {
-    fetchData();
-    window.ethereum.on('accountsChanged', fetchData);
+    fetchPoolDetails();
+    ethereum.on('accountsChanged', fetchPoolDetails);
+    return () => {
+      ethereum.removeListener('accountsChanged', fetchPoolDetails);
+    };
   }, []);
 
-  async function fetchData() {
-    if (window.ethereum.selectedAddress) {
-      setPoolSupply(toCkb(await getReserveAvailableLiquidity()).toFixed(4));
+  async function fetchPoolDetails() {
+    if (ethereum.selectedAddress) {
+      setPoolSupply(
+        parseFloat(fromShannon(await getReserveAvailableLiquidity())).toFixed(4)
+      );
     }
   }
 
@@ -25,14 +30,19 @@ export default function Pool({ asset, type, supplyCapital, withdrawCapital }) {
     <div className='p-6 w-96 rounded-lg border border-gray-200 bg-white'>
       <div className='flex items-center mb-6'>
         <div className='pr-6'>
-          <Image src={`/${asset}.png`} alt={asset} width='24' height='36' />
+          <Image
+            src={`/static/images/${asset}.png`}
+            alt={asset}
+            width='24'
+            height='36'
+          />
         </div>
         <div>
           <p className='font-bold'>{asset}</p>
           <p className='text-sm font-light text-gray-500'>{type}</p>
         </div>
         <div className='ml-auto'>
-          <p className='text-sm font-light text-gray-500'>Supplied Capital</p>
+          <p className='text-sm font-light text-gray-500'>Total Supply</p>
           <p className='text-sm'>{poolSupply} CKB</p>
         </div>
       </div>

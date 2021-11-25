@@ -1,9 +1,13 @@
-export const toCkb = function (shannon) {
-  return shannon / 10 ** 8;
+import BigNumber from 'bignumber.js';
+
+const DECIMALS = 8;
+
+export const fromShannon = function (shannon) {
+  const bn = new BigNumber(shannon + 'e-' + DECIMALS);
+  return bn.toString();
 };
 
-export const fromCkb = function (ckb) {
-  const precision = 10 ** 8;
-  const preciseCkb = parseFloat(parseFloat(ckb).toFixed(7));
-  return precision * preciseCkb;
+export const toShannon = function (ckb) {
+  const bn = new BigNumber(ckb + 'e+' + DECIMALS);
+  return bn.toString();
 };
